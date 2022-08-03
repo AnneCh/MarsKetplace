@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/home/anne/HAAAAAAAA/newTry/contracts/MarsKetplace.sol": {
-      "lastModificationDate": 1659340227557,
-      "contentHash": "a06dd6e11710a8746c5790df1aa5be94",
+      "lastModificationDate": 1659445544078,
+      "contentHash": "27b192deae83b010cbc46c05407a2509",
       "sourceName": "contracts/MarsKetplace.sol",
       "solcConfig": {
         "version": "0.8.7",
