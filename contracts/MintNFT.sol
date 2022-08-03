@@ -15,17 +15,21 @@ contract MintNFT is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    //Provide token URIs once everything uploaded to pinata/ipfs
+    // list of all the token URIs
+    string[] internal _allTokenURIs;
+    //from there, write a function that will pick the token uri according to the tokenID=> if mint token id is 1, then the NFT#1 is to be minted
+    //and the first URI of the list must be set
+    string internal _tokenURI;
     
     constructor() ERC721("Plot On Mars", "POM") {}
 
 
     //first, write a mint() function calling _safeMint() and _setTokenURI
-    function safeMint(string memory tokenURI) public onlyOwner {
+    function safeMint() public onlyOwner {
         _tokenIds.increment();
         uint256 tokenId = _tokenIds.current();
         _safeMint(msg.sender, tokenId);
-        _setTokenURI(tokenId, tokenURI);
+        //_setTokenURI(tokenId,_tokenURI);
 
     }
 
