@@ -46,8 +46,8 @@
       ]
     },
     "/home/anne/HAAAAAAAA/newTry/contracts/MintNFT.sol": {
-      "lastModificationDate": 1659339994304,
-      "contentHash": "0bdcfd95b4dfc1d6d99781aa85156ad0",
+      "lastModificationDate": 1659519058546,
+      "contentHash": "1128106656a4268b349c16153008da73",
       "sourceName": "contracts/MintNFT.sol",
       "solcConfig": {
         "version": "0.8.7",
@@ -81,6 +81,7 @@
       },
       "imports": [
         "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        "@openzeppelin/contracts/access/Ownable.sol",
         "@openzeppelin/contracts/utils/Counters.sol"
       ],
       "versionPragmas": [
@@ -566,6 +567,50 @@
       ],
       "artifacts": [
         "Counters"
+      ]
+    },
+    "/home/anne/HAAAAAAAA/newTry/node_modules/@openzeppelin/contracts/access/Ownable.sol": {
+      "lastModificationDate": 1659337832013,
+      "contentHash": "e436cea06129be2c73cda4b1acc848b5",
+      "sourceName": "@openzeppelin/contracts/access/Ownable.sol",
+      "solcConfig": {
+        "version": "0.8.7",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "devdoc",
+                "userdoc",
+                "storageLayout",
+                "evm.gasEstimates"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": true
+          }
+        }
+      },
+      "imports": [
+        "../utils/Context.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Ownable"
       ]
     }
   }
