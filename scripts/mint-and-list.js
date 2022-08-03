@@ -7,6 +7,7 @@ const { ethers } = require("hardhat")
 async function mintAndList() {
     const marsKetplace = await ethers.getContract("MarsKetplace")
     const nftMint = await ethers.getContract("MintNFT")
+    //list
 }
 
 mintAndList()
