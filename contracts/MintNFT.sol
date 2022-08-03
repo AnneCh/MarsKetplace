@@ -14,6 +14,7 @@ contract MintNFT is ERC721URIStorage, Ownable {
     //using Counters; library to secure incrementation by 1 only
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
+    uint256 public tokenId;
 
     // list of all the token URIs
     string[] internal _allTokenURIs;
@@ -27,13 +28,15 @@ contract MintNFT is ERC721URIStorage, Ownable {
     //first, write a mint() function calling _safeMint() and _setTokenURI
     function safeMint() public onlyOwner {
         _tokenIds.increment();
-        uint256 tokenId = _tokenIds.current();
+        tokenId = _tokenIds.current();
         _safeMint(msg.sender, tokenId);
-        //_setTokenURI(tokenId,_tokenURI);
-
+        //_setTokenURI(tokenId,_tokenURI); write that function
     }
 
-    
+    function getTokenId() public returns(uint256){
+        tokenId = _tokenIds.current();
+        return tokenId;
+    }
 }
 
 // list NFTs URIs /pinata
