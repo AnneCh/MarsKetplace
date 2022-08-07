@@ -37,13 +37,15 @@ b) `msg.sender` remains the owner, but gives the permission to `MarsKetplace` to
 
 \_tokenIds | Counter/openzeppelin | private | The Counter's helper contract allows us to safely increment only by 1 the counter that represents the token ID of each NFT. The current counter can be retrieved and incremented ||
 
+\_allTokenURIs | array of strings | internal | list of all the token URIs (10) representing each NFT's location on IPFS ||
+
 \tokenId | uint256 | public | token ID of a specific NFT, variable not initialized until an NFT is minted ||
 
-\tokenUri | string | internal | single token URI, variable not intialized until the safeMint() is called ||
+\indexedURI | string | internal | single token URI, mostly created for a view function/test ||
 
-\_allTokenURIs | array of strings | internal | list of all the token URIs (10) representing each NFT's location on IPFS
+\_IDtoURI | mapping(uint256=>string[]) | private | links indexes on array of tokenURIs to a tokenID ||
 
-\_IDtoURI | mapping(uint256=>string[]) | private | links indexes on arrayof tokenURIs to a tokenID ||
+\NFTMinted | event | returns the token ID of the minted NFT ||
 
 #### Helpers
 
@@ -67,3 +69,7 @@ It also sets the Token URI of the newly minted NFT. To do this, we call `_setTok
 #### getTokenId()
 
 A public view function that returns the current `tokenId`
+
+#### getURI()
+
+A public view function that returns the string of the URI of the corresponding index (mostly for tests)
