@@ -23,15 +23,25 @@ C.Smart Contracts
 
 ## MintNFT.sol
 
+The Mint contract will be deployed and called by the owner(designer?) of the NFTs (us).
+
+The contract will take in as parameters, the list of `tokenUris` that the `safeMint()` function will need in order to mint the NFTs.
+
+For now (08-07-22), the owner of the NFTs will be `msg.sender`, the options being the following :
+a) we choose the `MarsKetplace` contract to be the owner of the NFTs and sell them
+b) `msg.sender` remains the owner, but gives the permission to `MarsKetplace` to sell the NFTs on its behalf.
+
 ### Variables
 
 #### Contract's variables
 
 \_tokenIds | Counter/openzeppelin | private | The Counter's helper contract allows us to safely increment only by 1 the counter that represents the token ID of each NFT. The current counter can be retrieved and incremented ||
 
-tokenId | uint256 | public | token ID of a specific NFT, variable not initialized until an NFT is minted ||
+\tokenId | uint256 | public | token ID of a specific NFT, variable not initialized until an NFT is minted ||
 
-Plots | enum | internal | list representing the name of each individual NFT (POM#) ||
+\tokenUri | string | internal | single token URI, variable not intialized until the safeMint()
+
+\Plots | enum | internal | list representing the name of each individual NFT (POM#) ||
 
 \_allTokenURIs | array of strings | internal | list of all the token URIs (10) representing each NFT's location on IPFS
 
@@ -50,4 +60,8 @@ Depending on whether we already have the list of `tokenUris` or we need to uploa
 
 #### safeMint()
 
-The `safeMint` function is being called from the ERC721 contract and is being applied the `onlyOwner` modifier from Open Zeppelin to secure that only the owner of the contract can call this function.
+The public `safeMint` function is being called from the ERC721 contract and is being applied the `onlyOwner` modifier from Open Zeppelin to secure that only the owner of the contract can call this function.
+
+This function must get the current `_tokenIds` so to pass it in the `_safeMint()` function that we call from Open Zeppelin, preceded by the recipient's address, here, `msg.sender`.
+
+It also sets the Token URI of the newly minted NFT. To do this, we call `_setTokenURI` from Open Zeppelin, passing into the function the `tokenId` and `tokenUri`
