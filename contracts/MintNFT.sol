@@ -13,15 +13,15 @@ contract MintNFT is ERC721URIStorage, Ownable {
 
     //Helpers
     using Counters for Counters.Counter;
-    
 
     Counters.Counter private _tokenIds;
     string[] internal _allTokenURIs;
     uint256 public tokenId;
-    string internal tokenUri;
+    string internal tokenUri; // not sure will be of any use?
     // this mapping allows to link the token ID to the corresponding index in the list of the tokenURIS
-    mapping(uint256 => string[]) private _IDtoURI;
+    mapping(uint256 => string[]) public _IDtoURI;
 
+    event NFTMinted(uint256, address);
     
     constructor(string[10] memory tokenUris) ERC721("Plot On Mars", "POM") {
         _allTokenURIs = tokenUris;
@@ -30,19 +30,15 @@ contract MintNFT is ERC721URIStorage, Ownable {
 
     //first, write a mint() function calling _safeMint() and _setTokenURI
     function safeMint() public onlyOwner {
-        _tokenIds.increment();
-        tokenId = _tokenIds.current();
-        _safeMint(msg.sender, tokenId);
-        uint256 index = tokenId;
-        _IDtoURI[tokenId].push(_allTokenURIs[index]);
-        _setTokenURI(tokenId,_allTokenURIs[tokenId]);
+        for(uint256 i=0; i<_allTokenURIs.length; i++){
+            tokenId = _tokenIds.current();
+            _safeMint(msg.sender, tokenId);
+            _IDtoURI[tokenId].push(_allTokenURIs[i]);
+            _setTokenURI(tokenId,_allTokenURIs[i]);
+            _tokenIds.increment();
+        }
+        emit NFTMinted(tokenId, msg.sender);
     }
-
-    /* 
-
-
-
-    */
 
     function getTokenId() public returns(uint256){
         tokenId = _tokenIds.current();
