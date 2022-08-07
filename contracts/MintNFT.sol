@@ -20,7 +20,9 @@ contract MintNFT is ERC721URIStorage, Ownable {
     Counters.Counter private _tokenIds;
     string[] internal _allTokenURIs;
     uint256 public tokenId;
+    string internal tokenUri;
     mapping(uint256 => Plots) private _tokenToPlot;
+    //by mapping the token# to the current tokenId
 
 
     
