@@ -45,7 +45,7 @@ b) `msg.sender` remains the owner, but gives the permission to `MarsKetplace` to
 
 \_IDtoURI | mapping(uint256=>string[]) | private | links indexes on array of tokenURIs to a tokenID ||
 
-\NFTMinted | event | returns the token ID of the minted NFT ||
+\NFTMinted | event | returns the token ID and the token URI of the minted NFT ||
 
 #### Helpers
 
