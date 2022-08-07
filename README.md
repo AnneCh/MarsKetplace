@@ -39,13 +39,11 @@ b) `msg.sender` remains the owner, but gives the permission to `MarsKetplace` to
 
 \tokenId | uint256 | public | token ID of a specific NFT, variable not initialized until an NFT is minted ||
 
-\tokenUri | string | internal | single token URI, variable not intialized until the safeMint()
-
-\Plots | enum | internal | list representing the name of each individual NFT (POM#) ||
+\tokenUri | string | internal | single token URI, variable not intialized until the safeMint() is called ||
 
 \_allTokenURIs | array of strings | internal | list of all the token URIs (10) representing each NFT's location on IPFS
 
-\_tokenToPlot | mapping(uint256=>enum) | private | links indexes on Plots to a tokenID (see if useful or not)
+\_IDtoURI | mapping(uint256=>string[]) | private | links indexes on arrayof tokenURIs to a tokenID ||
 
 #### Helpers
 
@@ -65,3 +63,7 @@ The public `safeMint` function is being called from the ERC721 contract and is b
 This function must get the current `_tokenIds` so to pass it in the `_safeMint()` function that we call from Open Zeppelin, preceded by the recipient's address, here, `msg.sender`.
 
 It also sets the Token URI of the newly minted NFT. To do this, we call `_setTokenURI` from Open Zeppelin, passing into the function the `tokenId` and `tokenUri`
+
+#### getTokenId()
+
+A public view function that returns the current `tokenId`

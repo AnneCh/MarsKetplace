@@ -14,16 +14,13 @@ contract MintNFT is ERC721URIStorage, Ownable {
     //Helpers
     using Counters for Counters.Counter;
     
-    // NFT variables 
-    enum Plots { POM1, POM10, POM2, POM3, POM4, POM5, POM6, POM7, POM8, POM9 }
 
     Counters.Counter private _tokenIds;
     string[] internal _allTokenURIs;
     uint256 public tokenId;
     string internal tokenUri;
-    mapping(uint256 => Plots) private _tokenToPlot;
-    //by mapping the token# to the current tokenId
-
+    mapping(uint256 => string[]) private _IDtoURI;
+    // this mapping allows to link the token ID to the corresponding index in the list of the tokenURIS
 
     
     constructor(string[10] memory tokenUris) ERC721("Plot On Mars", "POM") {
@@ -38,6 +35,10 @@ contract MintNFT is ERC721URIStorage, Ownable {
         _safeMint(msg.sender, tokenId);
         //_setTokenURI(tokenId,_allTokenURIs[index(plots)]);
     }
+
+    /* 
+
+    */
 
     function getTokenId() public returns(uint256){
         tokenId = _tokenIds.current();
