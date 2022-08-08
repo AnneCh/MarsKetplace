@@ -1,6 +1,5 @@
 const { assert } = require("chai")
 const { network, deployment, ethers, deployments } = require("hardhat")
-const { isCallTrace } = require("hardhat/internal/hardhat-network/stack-traces/message-trace")
 const { developmentChains } = require("../helper-hardhat-config")
 
 //Arrange-Act-Assert (AAA)
@@ -35,7 +34,12 @@ const { developmentChains } = require("../helper-hardhat-config")
           })
 
           // only the owner can only be owner ("0xeAD5cb04207343C163b6B6D6bE627d3DC4Ca459b")
-          describe("The owner can call the safeMint function", function () {})
+          describe("The owner can call the safeMint function", function () {
+              it("should use our metamask address to mint the tokens", async function () {
+                  await mintNFT.safeMint()
+                  assert(toString(msg.senger) == "0xeAD5cb04207343C163b6B6D6bE627d3DC4Ca459b")
+              })
+          })
 
           // test that other account cannot call the safeMint() with user account
           describe("The user account calling safeMint() should trigger a revert function", function () {})
