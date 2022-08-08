@@ -10,7 +10,9 @@ const { developmentChains } = require("../helper-hardhat-config")
 !developmentChains.includes(network.name)
     ? describe.skip
     : describe("Basic NFT minting tests", function () {
-          let mintNFT, deployer
+          let mintNFT, deployer, instanceContract
+          let _name = "Plot On Mars"
+          let _symbol = "POM"
 
           //deploys the contract and gets an instance of it to work with
           beforeEach(async () => {
@@ -20,7 +22,13 @@ const { developmentChains } = require("../helper-hardhat-config")
               await deployments.fixture(["mintnft"])
               mintNFT = await ethers.getContract("MintNFT")
           })
+
           describe("Deployment", function () {
+              it("Should have the correct name and symbol", async function () {
+                  expect(await mintNFT.name()).to.equal(_name)
+                  expect(await mintNFT.symbol()).to.equal(_symbol)
+              })
+
               it("should set the right owner", async function () {
                   expect(await mintNFT.owner()).to.equal(deployer.address)
               })
