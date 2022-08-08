@@ -27,6 +27,10 @@ contract MintNFT is ERC721URIStorage, Ownable {
         _allTokenURIs = tokenUris;
     }
 
+    function viewURIs(uint256 i) public view returns(string[] memory){
+        return _allTokenURIs[i];
+    }
+
 
     //first, write a mint() function calling _safeMint() and _setTokenURI
     function safeMint() public onlyOwner {
