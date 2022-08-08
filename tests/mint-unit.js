@@ -1,8 +1,10 @@
-const { assert } = require("chai")
+const { assert, expect } = require("chai")
 const { network, deployment, ethers, deployments } = require("hardhat")
 const { developmentChains } = require("../helper-hardhat-config")
 
 //Arrange-Act-Assert (AAA)
+// if we have defined an error in our solidity code, we must wrap the logic corresponding
+//in a catch/try{}
 
 //skip test if on localhost/hardhat
 !developmentChains.includes(network.name)
@@ -18,38 +20,43 @@ const { developmentChains } = require("../helper-hardhat-config")
               await deployments.fixture(["mintnft"])
               mintNFT = await ethers.getContract("MintNFT")
           })
-
-          // after first deployment, grab the tokenURIs and test them individually = getURI(0)="ipfs://..."
-          describe("Each token URI is properly initialized", function () {
-              it("Should set the 1st token URI to its correct ipfs address", function () {})
-              it("Should set the 2nd token URI to its correct ipfs address", function () {})
-              it("Should set the 3rd token URI to its correct ipfs address", function () {})
-              it("Should set the 4th token URI to its correct ipfs address", function () {})
-              it("Should set the 5th token URI to its correct ipfs address", function () {})
-              it("Should set the 6th token URI to its correct ipfs address", function () {})
-              it("Should set the 7th token URI to its correct ipfs address", function () {})
-              it("Should set the 8th token URI to its correct ipfs address", function () {})
-              it("Should set the 9th token URI to its correct ipfs address", function () {})
-              it("Should set the 10th token URI to its correct ipfs address", function () {})
-          })
-
-          // only the owner can only be owner ("0xeAD5cb04207343C163b6B6D6bE627d3DC4Ca459b")
-          describe("The owner can call the safeMint function", function () {
-              it("should use our metamask address to mint the tokens", async function () {
-                  await mintNFT.safeMint()
-                  assert(toString(msg.senger) == "0xeAD5cb04207343C163b6B6D6bE627d3DC4Ca459b")
+          describe("Deployment", function () {
+              it("should set the right owner", async function () {
+                  expect(await mintNFT.owner()).to.equal(deployer.address)
               })
           })
 
-          // test that other account cannot call the safeMint() with user account
-          describe("The user account calling safeMint() should trigger a revert function", function () {})
+          // only the owner can only be owner
+          describe("The owner can call the safeMint function", function () {
+              it("Should be reverted as caller is not owner", async function () {
+                  await expect(mintNFT.connect(user).safeMint()).to.be.revertedWith(
+                      "caller is not the owner"
+                  )
+              })
+          })
 
-          // the tokenUris have been initialized, the length of _allTokenURIs should be 10
-          describe("The constructor should have initialized _allTokenURIs and should equal 10", function () {})
+          // after first deployment, grab the tokenURIs and test them individually = getURI(0)="ipfs://..."
+          //   describe("Each token URI is properly initialized", function () {
+          //       it("Should set the 1st token URI to its correct ipfs address", function () {})
+          //       it("Should set the 2nd token URI to its correct ipfs address", function () {})
+          //       it("Should set the 3rd token URI to its correct ipfs address", function () {})
+          //       it("Should set the 4th token URI to its correct ipfs address", function () {})
+          //       it("Should set the 5th token URI to its correct ipfs address", function () {})
+          //       it("Should set the 6th token URI to its correct ipfs address", function () {})
+          //       it("Should set the 7th token URI to its correct ipfs address", function () {})
+          //       it("Should set the 8th token URI to its correct ipfs address", function () {})
+          //       it("Should set the 9th token URI to its correct ipfs address", function () {})
+          //       it("Should set the 10th token URI to its correct ipfs address", function () {})
+          //   })
 
-          // an event is emitted after each mint
-          describe("At the end of safeMint(), an event should be emitted", function () {})
+          //           // one token URI should start with 'ipfs://'
+          //           describe("The constructor should have initialized the token URIs", function () {
+          //               it("should contain ipfs in the address", async function () {})
+          //           })
 
-          // The beneficiary (`to`) is msg.sender
-          describe("After minting, the owner of the NFTs should be msg.sender", function () {})
+          //       // an event is emitted after each mint
+          //       describe("At the end of safeMint(), an event should be emitted", function () {})
+
+          //       // The beneficiary (`to`) is msg.sender
+          //       describe("After minting, the owner of the NFTs should be msg.sender", function () {})
       })
