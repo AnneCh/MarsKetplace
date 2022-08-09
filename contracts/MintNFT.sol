@@ -15,7 +15,7 @@ contract MintNFT is ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIds;
-    string[] internal _allTokenURIs;
+    string[] public _allTokenURIs;
     uint256 public tokenId;
     string internal indexedURI; 
     // this mapping allows to link the token ID to the corresponding index in the list of the tokenURIS
@@ -27,8 +27,9 @@ contract MintNFT is ERC721URIStorage, Ownable {
         _allTokenURIs = tokenUris;
     }
 
-    function viewURIs(uint256 i) public view returns(string[] memory){
-        return _allTokenURIs[i];
+    function viewURIs(uint256 i) public view returns(string memory){
+        string memory unique = _allTokenURIs[i];
+        return unique;
     }
 
 
