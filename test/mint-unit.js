@@ -10,7 +10,7 @@ const { developmentChains } = require("../helper-hardhat-config")
 !developmentChains.includes(network.name)
     ? describe.skip
     : describe("Basic NFT minting tests", function () {
-          let mintNFT, deployer, instanceContract
+          let mintNFT, deployer
           let _name = "Plot On Mars"
           let _symbol = "POM"
           let tokensUris = [
@@ -44,10 +44,16 @@ const { developmentChains } = require("../helper-hardhat-config")
               it("should set the right owner", async function () {
                   expect(await mintNFT.owner()).to.equal(deployer.address)
               })
-              //   it("Should set _allTokenURIs to 10 strings", async function () {
-              //       expect(await mintNFT.viewURIs).to.equal(tokensUris)
-              //   })
-              // NOT WORKING
+          })
+
+          //after first deployment, grab the tokenURIs and test them individually = getURI(0)="ipfs://..."
+          describe("Each token URI is properly initialized", function () {
+              it("Should set the 1st token URI to its correct ipfs address", async function () {
+                  for (i = 0; i < tokensUris.length; i++) {
+                      expect(await mintNFT.viewURIs(i)).to.equal(tokensUris[i])
+                      console.log(await mintNFT.viewURIs(i), tokensUris[i])
+                  }
+              })
           })
 
           // safeMint()
@@ -59,23 +65,13 @@ const { developmentChains } = require("../helper-hardhat-config")
                       "caller is not the owner"
                   )
               })
-          })
-
-          // an event is emitted after each mint
-          describe("At the end of safeMint(), an event should be emitted", function () {})
-
-          //after first deployment, grab the tokenURIs and test them individually = getURI(0)="ipfs://..."
-          describe("Each token URI is properly initialized", function () {
-              it("Should set the 1st token URI to its correct ipfs address", async function () {
+              it("Should emit the NFtMinted event after each token minted", async function () {
                   for (i = 0; i < tokensUris.length; i++) {
-                      expect(await mintNFT.viewURIs(i)).to.equal(tokensUris[i])
-                      console.log(await mintNFT.viewURIs(i))
+                      const token = await mintNFT.getTokenId()
+                      await expect(mintNFT.safeMint())
+                          .to.emit(mintNFT, "NFTMinted")
+                          .withArgs(token, tokensUris[i])
                   }
               })
           })
-
-          //           // one token URI should start with 'ipfs://'
-          //           describe("The constructor should have initialized the token URIs", function () {
-          //               it("should contain ipfs in the address", async function () {})
-          //           })
       })
