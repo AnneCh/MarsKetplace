@@ -67,17 +67,11 @@ const { developmentChains } = require("../helper-hardhat-config")
           //after first deployment, grab the tokenURIs and test them individually = getURI(0)="ipfs://..."
           describe("Each token URI is properly initialized", function () {
               it("Should set the 1st token URI to its correct ipfs address", async function () {
-                  expect(await mintNFT.viewURIs(0)).to.equal(tokensUris[0])
+                  for (i = 0; i < tokensUris.length; i++) {
+                      expect(await mintNFT.viewURIs(i)).to.equal(tokensUris[i])
+                      console.log(await mintNFT.viewURIs(i))
+                  }
               })
-              //   it("Should set the 2nd token URI to its correct ipfs address", function () {})
-              //   it("Should set the 3rd token URI to its correct ipfs address", function () {})
-              //   it("Should set the 4th token URI to its correct ipfs address", function () {})
-              //   it("Should set the 5th token URI to its correct ipfs address", function () {})
-              //   it("Should set the 6th token URI to its correct ipfs address", function () {})
-              //   it("Should set the 7th token URI to its correct ipfs address", function () {})
-              //   it("Should set the 8th token URI to its correct ipfs address", function () {})
-              //   it("Should set the 9th token URI to its correct ipfs address", function () {})
-              //   it("Should set the 10th token URI to its correct ipfs address", function () {})
           })
 
           //           // one token URI should start with 'ipfs://'
