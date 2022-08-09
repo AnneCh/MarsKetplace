@@ -67,7 +67,7 @@ const { developmentChains } = require("../helper-hardhat-config")
           //after first deployment, grab the tokenURIs and test them individually = getURI(0)="ipfs://..."
           describe("Each token URI is properly initialized", function () {
               it("Should set the 1st token URI to its correct ipfs address", async function () {
-                  expect(await mintNFT.viewURIs()).to.equal(tokensUris[0])
+                  expect(await mintNFT.viewURIs(0)).to.equal(tokensUris[0])
               })
               //   it("Should set the 2nd token URI to its correct ipfs address", function () {})
               //   it("Should set the 3rd token URI to its correct ipfs address", function () {})
