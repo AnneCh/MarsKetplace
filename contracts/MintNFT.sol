@@ -50,10 +50,6 @@ contract MintNFT is ERC721URIStorage, Ownable {
         return tokenId;
     }
 
-    function getURI(uint256 index) public returns(string memory){
-        indexedURI = _allTokenURIs[index];
-        return indexedURI;
-    }
 }
 
 // list NFTs URIs /pinata
