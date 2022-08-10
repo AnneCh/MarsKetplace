@@ -1,4 +1,4 @@
-const { assert, expect } = require("chai")
+const { assert, expect, expectEvent } = require("chai")
 const { network, deployment, ethers, deployments } = require("hardhat")
 const { developmentChains } = require("../helper-hardhat-config")
 
@@ -61,13 +61,14 @@ const { developmentChains } = require("../helper-hardhat-config")
       // only the owner can call the function
       describe("The owner can call the safeMint function", function () {
         it("Should be reverted as caller is not owner", async function () {
-          await expect(mintNFT.connect(user).safeMint()).to.be.revertedWith(
-            "caller is not the owner"
+          await expect(mintNFT.connect(user).safeMint(user.address)).to.be.revertedWith(
+            "Ownable: caller is not the owner"
           )
         })
         it("Should emit the NFtMinted event after each token minted", async function () {
           for (i = 0; i < tokensUris.length; i++) {
             const token = await mintNFT.getTokenId()
+
             await expect(mintNFT.safeMint())
               .to.emit(mintNFT, "NFTMinted")
               .withArgs(token, tokensUris[i])

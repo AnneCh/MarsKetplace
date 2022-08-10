@@ -4,50 +4,79 @@
 
 pragma solidity ^0.8.7;
 
-
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract MintNFT is ERC721URIStorage, Ownable {
+contract MintNFT is ERC721, ERC721URIStorage, Ownable {
 
     //Helpers
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIds;
     string[] public _allTokenURIs;
-    uint256 public tokenId;
     string internal indexedURI; 
     // this mapping allows to link the token ID to the corresponding index in the list of the tokenURIS
-    mapping(uint256 => string[]) public _IDtoURI;
+    //mapping(uint256 => string[]) public _IDtoURI;
 
-    event NFTMinted(uint256, string);
+    event NFTMinted(uint256 tokenId, string uri);
     
     constructor(string[10] memory tokenUris) ERC721("Plot On Mars", "POM") {
         _allTokenURIs = tokenUris;
     }
 
+    // function to view a specific URI related to a tokenID
     function viewURIs(uint256 i) public view returns(string memory){
         string memory unique = _allTokenURIs[i];
         return unique;
     }
 
+// there's a problem with the mint function and the way I wrote the loop
+// _safeMint requires an address and a token Id, and _setTokenURI requires a token ID and a URI
+// the problem arises when trying to get one single URI from the list, I think. I'm not sure
+// that the _setTokenURI is working
+
 
     //first, write a mint() function calling _safeMint() and _setTokenURI
     function safeMint() public onlyOwner {
         for(uint256 i=0; i<_allTokenURIs.length; i++){
-            tokenId = _tokenIds.current();
-            _safeMint(msg.sender, tokenId);
-            _IDtoURI[tokenId].push(_allTokenURIs[i]);
-            _setTokenURI(tokenId,_allTokenURIs[i]);
             _tokenIds.increment();
-            emit NFTMinted(tokenId, _allTokenURIs[i]);
+            uint256 tokenId = _tokenIds.current();
+            _safeMint(msg.sender, tokenId);
+            string memory uri = _allTokenURIs[i];
+            //_IDtoURI[tokenId].push(uri);
+            _setTokenURI(tokenId,uri);
+            emit NFTMinted(tokenId,uri);
         }
     }
 
-    function getTokenId() public returns(uint256){
-        tokenId = _tokenIds.current();
+    // function setTokenURI(uint256 tokenId, string memory _tokenURI) public {
+    //     require(
+    //         _isApprovedOrOwner(_msgSender(), tokenId),
+    //         "ERC721: transfer caller is not owner nor approved"
+    //     );
+    //     _setTokenURI(tokenId, _tokenURI);
+    // }
+
+    function getTokenId() public view returns(uint256){
+        uint256 tokenId = _tokenIds.current();
         return tokenId;
+    }
+
+     // The following functions are overrides required by Solidity.
+
+    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+        super._burn(tokenId);
+    }
+
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
+    {
+        return super.tokenURI(tokenId);
     }
 
 }
