@@ -20,7 +20,7 @@ contract MintNFT is ERC721, ERC721URIStorage, Ownable {
     // this mapping allows to link the token ID to the corresponding index in the list of the tokenURIS
     //mapping(uint256 => string[]) public _IDtoURI;
 
-    event NFTMinted(uint256 tokenId, string uri);
+    event NFTMinted(uint256, string);
     
     constructor(string[10] memory tokenUris) ERC721("Plot On Mars", "POM") {
         _allTokenURIs = tokenUris;
@@ -39,17 +39,41 @@ contract MintNFT is ERC721, ERC721URIStorage, Ownable {
 
 
     //first, write a mint() function calling _safeMint() and _setTokenURI
-    function safeMint() public onlyOwner {
-        for(uint256 i=0; i<_allTokenURIs.length; i++){
-            _tokenIds.increment();
-            uint256 tokenId = _tokenIds.current();
-            _safeMint(msg.sender, tokenId);
-            string memory uri = _allTokenURIs[i];
-            //_IDtoURI[tokenId].push(uri);
-            _setTokenURI(tokenId,uri);
-            emit NFTMinted(tokenId,uri);
+    // function safeMint() public onlyOwner {
+    //     for(uint256 i=0; i<_allTokenURIs.length; i++){
+    //         _tokenIds.increment();
+    //         uint256 tokenId = _tokenIds.current();
+    //         _safeMint(msg.sender, tokenId);
+    //         string memory uri = _allTokenURIs[i];
+    //         //_IDtoURI[tokenId].push(uri);
+    //         _setTokenURI(tokenId,uri);
+    //         emit NFTMinted(tokenId,uri);
+    //     }
+    // }
+
+
+    function bulkMint(string[] memory uris)
+        public
+        onlyOwner
+    {
+        address to = msg.sender;
+        for (uint8 i = 0; i < uris.length; i++) {
+            safeMint(to, uris[i]);
         }
     }
+
+    function safeMint(address to, string memory uri)
+        internal
+        onlyOwner
+    {
+        uint256 tokenId = _tokenIds.current();
+        _safeMint(to, tokenId);
+        _setTokenURI(tokenId, uri);
+        emit NFTMinted(tokenId, uri);
+        _tokenIds.increment();
+    }
+
+
 
     // function setTokenURI(uint256 tokenId, string memory _tokenURI) public {
     //     require(
@@ -60,8 +84,7 @@ contract MintNFT is ERC721, ERC721URIStorage, Ownable {
     // }
 
     function getTokenId() public view returns(uint256){
-        uint256 tokenId = _tokenIds.current();
-        return tokenId;
+        return _tokenIds.current();
     }
 
      // The following functions are overrides required by Solidity.
