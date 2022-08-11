@@ -74,4 +74,12 @@ const { developmentChains } = require("../helper-hardhat-config")
           })
         })
       })
+
+      describe("View token ID to check that counter is at 10", function () {
+        let tokencounter = 10
+        it("Should return a token counter of 10 if all NFTs have been successfully minted", async function () {
+          await mintNFT.bulkMint(tokensUris)
+          expect(await mintNFT.getTokenId()).to.equal(tokencounter)
+        })
+      })
     })
