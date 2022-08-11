@@ -20,17 +20,10 @@ contract MintNFT is ERC721, ERC721URIStorage, Ownable {
     // this mapping allows to link the token ID to the corresponding index in the list of the tokenURIS
     //mapping(uint256 => string[]) public _IDtoURI;
 
-    event NFTMinted(uint256, string);
+    event NFTMinted(uint tokenId, string uri);
     
-    constructor(string[10] memory tokenUris) ERC721("Plot On Mars", "POM") {
-        _allTokenURIs = tokenUris;
-    }
+    constructor() ERC721("Plot On Mars", "POM") {}
 
-    // function to view a specific URI related to a tokenID
-    function viewURIs(uint256 i) public view returns(string memory){
-        string memory unique = _allTokenURIs[i];
-        return unique;
-    }
 
 // there's a problem with the mint function and the way I wrote the loop
 // _safeMint requires an address and a token Id, and _setTokenURI requires a token ID and a URI
@@ -56,8 +49,9 @@ contract MintNFT is ERC721, ERC721URIStorage, Ownable {
         public
         onlyOwner
     {
+        _allTokenURIs = uris;
         address to = msg.sender;
-        for (uint8 i = 0; i < uris.length; i++) {
+        for (uint i = 0; i < uris.length; i++) {
             safeMint(to, uris[i]);
         }
     }
@@ -66,11 +60,11 @@ contract MintNFT is ERC721, ERC721URIStorage, Ownable {
         internal
         onlyOwner
     {
+        _tokenIds.increment();
         uint256 tokenId = _tokenIds.current();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
         emit NFTMinted(tokenId, uri);
-        _tokenIds.increment();
     }
 
 
@@ -85,6 +79,13 @@ contract MintNFT is ERC721, ERC721URIStorage, Ownable {
 
     function getTokenId() public view returns(uint256){
         return _tokenIds.current();
+    }
+
+
+    // function to view a specific URI related to a tokenID
+    function viewURIs(uint256 i) public view returns(string memory){
+        string memory unique = _allTokenURIs[i];
+        return unique;
     }
 
      // The following functions are overrides required by Solidity.

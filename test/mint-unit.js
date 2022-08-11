@@ -46,20 +46,8 @@ const { developmentChains } = require("../helper-hardhat-config")
         })
       })
 
-      //after first deployment, grab the tokenURIs and test them individually = getURI(0)="ipfs://..."
-      describe("Each token URI is properly initialized", function () {
-        it("Should set the 1st token URI to its correct ipfs address", async function () {
-          for (i = 0; i < tokensUris.length; i++) {
-            expect(await mintNFT.viewURIs(i)).to.equal(tokensUris[i])
-            console.log(await mintNFT.viewURIs(i), "is equal to", tokensUris[i])
-          }
-        })
-      })
-
-      // safeMint()
-
-      // only the owner can call the function
-      describe("The owner can call the bulkMint function", function () {
+      // bulkMint()
+      describe("It mints 10NFTs", function () {
         it("Should be reverted as caller is not owner", async function () {
           await expect(mintNFT.connect(user).bulkMint(tokensUris)).to.be.revertedWith(
             "Ownable: caller is not the owner"
@@ -67,10 +55,23 @@ const { developmentChains } = require("../helper-hardhat-config")
         })
         it("Should emit the NFtMinted event after each token minted", async function () {
           for (i = 0; i < tokensUris.length; i++) {
+            let index = i + 1
             await expect(mintNFT.bulkMint(tokensUris))
               .to.emit(mintNFT, "NFTMinted")
-              .withArgs(deployer, tokensUris[i])
+              .withArgs(index, tokensUris[i])
           }
+        })
+
+        //after calling buklMint(), grab the tokenURIs and test them individually = getURI(0)="ipfs://..."
+        describe("Each token URI is properly initialized", function () {
+          it("Should set the token URIs to their correct ipfs addresses", async function () {
+            await mintNFT.bulkMint(tokensUris)
+            //assumes that the bulkMint() is correctly working. If it is, it will initialize _allTokenURIs and viewUris() will return them
+            for (i = 0; i < tokensUris.length; i++) {
+              expect(await mintNFT.viewURIs(i)).to.equal(tokensUris[i])
+              console.log(await mintNFT.viewURIs(i), "is equal to", tokensUris[i])
+            }
+          })
         })
       })
     })
