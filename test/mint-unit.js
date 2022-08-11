@@ -58,7 +58,7 @@ const { developmentChains } = require("../helper-hardhat-config")
             let index = i + 1
             await expect(mintNFT.bulkMint(tokensUris))
               .to.emit(mintNFT, "NFTMinted")
-              .withArgs(index, tokensUris[i])
+              .withArgs(tokensUris[i])
           }
         })
 

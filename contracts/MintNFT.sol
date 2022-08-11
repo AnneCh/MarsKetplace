@@ -16,11 +16,10 @@ contract MintNFT is ERC721, ERC721URIStorage, Ownable {
 
     Counters.Counter private _tokenIds;
     string[] public _allTokenURIs;
-    string internal indexedURI; 
     // this mapping allows to link the token ID to the corresponding index in the list of the tokenURIS
     //mapping(uint256 => string[]) public _IDtoURI;
 
-    event NFTMinted(uint tokenId, string uri);
+    event NFTMinted(string indexed uri);
     
     constructor() ERC721("Plot On Mars", "POM") {}
 
@@ -64,7 +63,7 @@ contract MintNFT is ERC721, ERC721URIStorage, Ownable {
         uint256 tokenId = _tokenIds.current();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
-        emit NFTMinted(tokenId, uri);
+        emit NFTMinted(uri);
     }
 
 
