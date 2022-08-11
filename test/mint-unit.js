@@ -58,8 +58,16 @@ const { developmentChains } = require("../helper-hardhat-config")
             let index = i + 1
             await expect(mintNFT.bulkMint(tokensUris))
               .to.emit(mintNFT, "NFTMinted")
-              .withArgs(tokensUris[i])
+              .withArgs(tokensUris[i], index)
           }
+        })
+
+        describe("View token ID to check that counter is at 10", function () {
+          let tokencounter = 10
+          it("Should return a token counter of 10 if all NFTs have been successfully minted", async function () {
+            await mintNFT.bulkMint(tokensUris)
+            expect(await mintNFT.getTokenId()).to.equal(tokencounter)
+          })
         })
 
         //after calling buklMint(), grab the tokenURIs and test them individually = getURI(0)="ipfs://..."
@@ -72,14 +80,6 @@ const { developmentChains } = require("../helper-hardhat-config")
               console.log(await mintNFT.viewURIs(i), "is equal to", tokensUris[i])
             }
           })
-        })
-      })
-
-      describe("View token ID to check that counter is at 10", function () {
-        let tokencounter = 10
-        it("Should return a token counter of 10 if all NFTs have been successfully minted", async function () {
-          await mintNFT.bulkMint(tokensUris)
-          expect(await mintNFT.getTokenId()).to.equal(tokencounter)
         })
       })
     })

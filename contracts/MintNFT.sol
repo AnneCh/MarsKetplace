@@ -17,31 +17,12 @@ contract MintNFT is ERC721, ERC721URIStorage, Ownable {
     Counters.Counter private _tokenIds;
     string[] public _allTokenURIs;
     // this mapping allows to link the token ID to the corresponding index in the list of the tokenURIS
-    //mapping(uint256 => string[]) public _IDtoURI;
+    mapping(uint256 => string) public _IDtoURI;
 
-    event NFTMinted(string indexed uri);
+    event NFTMinted(string indexed uri, uint256 indexed tokenId);
     
     constructor() ERC721("Plot On Mars", "POM") {}
 
-
-// there's a problem with the mint function and the way I wrote the loop
-// _safeMint requires an address and a token Id, and _setTokenURI requires a token ID and a URI
-// the problem arises when trying to get one single URI from the list, I think. I'm not sure
-// that the _setTokenURI is working
-
-
-    //first, write a mint() function calling _safeMint() and _setTokenURI
-    // function safeMint() public onlyOwner {
-    //     for(uint256 i=0; i<_allTokenURIs.length; i++){
-    //         _tokenIds.increment();
-    //         uint256 tokenId = _tokenIds.current();
-    //         _safeMint(msg.sender, tokenId);
-    //         string memory uri = _allTokenURIs[i];
-    //         //_IDtoURI[tokenId].push(uri);
-    //         _setTokenURI(tokenId,uri);
-    //         emit NFTMinted(tokenId,uri);
-    //     }
-    // }
 
 
     function bulkMint(string[] memory uris)
@@ -63,18 +44,10 @@ contract MintNFT is ERC721, ERC721URIStorage, Ownable {
         uint256 tokenId = _tokenIds.current();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
-        emit NFTMinted(uri);
+        _IDtoURI[tokenId]=uri;
+        emit NFTMinted(uri, tokenId);
     }
 
-
-
-    // function setTokenURI(uint256 tokenId, string memory _tokenURI) public {
-    //     require(
-    //         _isApprovedOrOwner(_msgSender(), tokenId),
-    //         "ERC721: transfer caller is not owner nor approved"
-    //     );
-    //     _setTokenURI(tokenId, _tokenURI);
-    // }
 
     function getTokenId() public view returns(uint256){
         return _tokenIds.current();
@@ -105,5 +78,4 @@ contract MintNFT is ERC721, ERC721URIStorage, Ownable {
 }
 
 // list NFTs URIs /pinata
-// mintNFT 
-// create a for loop to mint the NFTs in a batch and not one after the other => mint everything in one single transaction
+// mintNFT OK
