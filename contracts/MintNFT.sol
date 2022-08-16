@@ -16,13 +16,11 @@ contract MintNFT is ERC721, ERC721URIStorage, Ownable {
 
     Counters.Counter private _tokenIds;
     string[] public _allTokenURIs;
-    // this mapping allows to link the token ID to the corresponding index in the list of the tokenURIS
     mapping(uint256 => string) public _IDtoURI;
 
-    event NFTMinted(string indexed uri, uint256 indexed tokenId);
+    event NFTMinted(uint256 tokenId, string uri);
     
     constructor() ERC721("Plot On Mars", "POM") {}
-
 
 
     function bulkMint(string[] memory uris)
@@ -45,7 +43,7 @@ contract MintNFT is ERC721, ERC721URIStorage, Ownable {
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
         _IDtoURI[tokenId]=uri;
-        emit NFTMinted(uri, tokenId);
+        emit NFTMinted(tokenId, uri);
     }
 
 
@@ -59,6 +57,7 @@ contract MintNFT is ERC721, ERC721URIStorage, Ownable {
         string memory unique = _allTokenURIs[i];
         return unique;
     }
+
 
      // The following functions are overrides required by Solidity.
 
@@ -76,6 +75,3 @@ contract MintNFT is ERC721, ERC721URIStorage, Ownable {
     }
 
 }
-
-// list NFTs URIs /pinata
-// mintNFT OK
