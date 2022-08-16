@@ -29,6 +29,7 @@ contract MarsKetplace {
     // NFT contract address -> NFt tokenId -> listing(price and seller)
     mapping(address=> mapping(uint256 => Listing)) private s_NFTListed;
 
+    // create and add a modifier to make sure the NFT is not already listed
     function listItem(address nftAddress, uint256 tokenId, uint256 price) external {
         //chekc that price is not 0
         if (price <= 0) {
