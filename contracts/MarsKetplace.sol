@@ -31,9 +31,8 @@ contract MarsKetplace {
     // NFT contract address -> NFt tokenId -> listing(price and seller)
     mapping(address=> mapping(uint256 => Listing)) private s_NFTListed;
 
-    // create and add a modifier to make sure the NFT is not already listed
+    //  modifier to make sure the NFT is not already listed
     // get the tokenId and address, create a listing, and if there is a price, it means the nft is alreayd listed
-
     modifier notListed(address nftAddress, uint256 tokenId,address owner){
         Listing memory listing = s_NFTListed[nftAddress][tokenId];
         if (listing.price > 0) {
@@ -42,8 +41,8 @@ contract MarsKetplace {
         _;
     }
 
-    // modifier onlyOwner from the IERC721 to make sure the seller is the owner of the NFT
-    modifier onlyOwner(address nftAddress, uint256 tokenId, address spender){
+    // modifier isOwner from the IERC721 to make sure the seller is the owner of the NFT
+    modifier isOwner(address nftAddress, uint256 tokenId, address spender){
         IERC721 nft = IERC721(nftAddress);
         address owner = nft.ownerOf(tokenId);
         if (spender != owner) {
@@ -52,7 +51,17 @@ contract MarsKetplace {
         _;
     }
 
-    function listItem(address nftAddress, uint256 tokenId, uint256 price) external notListed(nftAddress, tokenId, msg.sender){
+    /*
+     * @notice Method to list the pre-minted NFTs on the marsKetplace
+     * @param nftAddress: address of one NFT
+     * @param tokenID: the token ID of one NFT
+     * @param price: sale price of a listed NFT
+     * @dev In this case, the original owner of all the NFTs will be the same, as well as the prices
+     * @dev but making the list function parameterizable is a future-proof way to allow buyers to sell it again 
+
+    */
+
+    function listItem(address nftAddress, uint256 tokenId, uint256 price) external notListed(nftAddress, tokenId, msg.sender) isOwner(nftAddress, tokenId, msg.sender){
         //chekc that price is not 0
         if (price <= 0) {
             revert MarsKetplace_PriceCantBeZero();
