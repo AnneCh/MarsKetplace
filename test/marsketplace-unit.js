@@ -7,8 +7,12 @@ const { developmentChains } = require("../helper-hardhat-config")
   ? describe.skip
   : describe("Basic NFT minting tests", function () {
       let marsketplace, deployer
+      let price = ethers.utils.parseEther("1")
 
       //deploys the contract and gets an instance of it to work with
+      // the beforeEach() will also need to deploy the contract that will mint the NFTs,
+      // and approve this contract to sell those NFTs
+      // mint NFTs and retrieve their contract addresses
       beforeEach(async () => {
         accounts = await ethers.getSigners()
         deployer = accounts[0]
