@@ -4,20 +4,48 @@
 
 pragma solidity ^0.8.7;
 
-
 // import IERC721 in order to approve our contract to sell the NFT on the behalf of our minter contract
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
-error MarsKetplace_PriceMustBeAboveZero();
+error MarsKetplace_PriceCantBeZero();
+error MarsKetplace_NotApproved();
 
 contract MarsKetplace {
 
-    // listItem can be called by our contract original owner of the NFTs
-    // function listItem(address nftAddress, uint256 tokenId, uint256 price) external {
-    //     if (price <= 0) {
-    //         revert MarsKetplace_PriceMustBeAboveZero();
-    //     }
-    // }
+    //keep track of price and seller, to be added to mapping
+    struct Listing{
+        uint256 price;
+        address seller;
+    } 
+
+    event ItemListed(
+        address indexed seller,
+        address indexed nftAddress,
+        uint256 indexed tokenId,
+        uint256 price
+    );
+
+    // mapping to keep track of listed nfts with address, tokenId, price but also address of seller
+    // NFT contract address -> NFt tokenId -> listing(price and seller)
+    mapping(address=> mapping(uint256 => Listing)) private s_NFTListed;
+
+    function listItem(address nftAddress, uint256 tokenId, uint256 price) external {
+        //chekc that price is not 0
+        if (price <= 0) {
+            revert MarsKetplace_PriceCantBeZero();
+        }
+        //check that this contract has the approval to sell the token - openzeppelin getApproved() from IERC721
+        IERC721 nft = IERC721(nftAddress);
+        if (nft.getApproved(tokenId) != address(this)){
+            revert MarsKetplace_NotApproved();
+        }
+        // update the listing s_NFTListed
+        s_NFTListed[nftAddress][tokenId] = Listing(price, msg.sender);
+        // need to emit an event 
+        emit ItemListed(msg.sender, nftAddress, tokenId, price);
+
+    }
+
 }
 
  
