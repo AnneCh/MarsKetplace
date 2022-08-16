@@ -9,6 +9,8 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 error MarsKetplace_PriceCantBeZero();
 error MarsKetplace_NotApproved();
+error MarsKetplace_AlreadyListed(address nftAddress, uint256 tokenId);
+error MarsKetplace_NotOwner();
 
 contract MarsKetplace {
 
@@ -30,7 +32,27 @@ contract MarsKetplace {
     mapping(address=> mapping(uint256 => Listing)) private s_NFTListed;
 
     // create and add a modifier to make sure the NFT is not already listed
-    function listItem(address nftAddress, uint256 tokenId, uint256 price) external {
+    // get the tokenId and address, create a listing, and if there is a price, it means the nft is alreayd listed
+
+    modifier notListed(address nftAddress, uint256 tokenId,address owner){
+        Listing memory listing = s_NFTListed[nftAddress][tokenId];
+        if (listing.price > 0) {
+            revert MarsKetplace_AlreadyListed(nftAddress, tokenId);
+        }
+        _;
+    }
+
+    // modifier onlyOwner from the IERC721 to make sure the seller is the owner of the NFT
+    modifier onlyOwner(address nftAddress, uint256 tokenId, address spender){
+        IERC721 nft = IERC721(nftAddress);
+        address owner = nft.ownerOf(tokenId);
+        if (spender != owner) {
+            revert MarsKetplace_NotOwner();
+        }
+        _;
+    }
+
+    function listItem(address nftAddress, uint256 tokenId, uint256 price) external notListed(nftAddress, tokenId, msg.sender){
         //chekc that price is not 0
         if (price <= 0) {
             revert MarsKetplace_PriceCantBeZero();
