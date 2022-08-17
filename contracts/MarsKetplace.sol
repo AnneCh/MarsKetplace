@@ -11,6 +11,8 @@ error MarsKetplace_PriceCantBeZero();
 error MarsKetplace_NotApproved();
 error MarsKetplace_AlreadyListed(address nftAddress, uint256 tokenId);
 error MarsKetplace_NotOwner();
+error MarsKetplace_NotListed(address nftAddress, uint256 tokenId);
+error MarsKetplace_PriceNotMet(address nftAddress, uint256 tokenId, uint256 price);
 
 contract MarsKetplace {
 
@@ -37,6 +39,15 @@ contract MarsKetplace {
         Listing memory listing = s_NFTListed[nftAddress][tokenId];
         if (listing.price > 0) {
             revert MarsKetplace_AlreadyListed(nftAddress, tokenId);
+        }
+        _;
+    }
+
+    // checking if the tokenId/nftAddress is correctly listed
+    modifier isListed(address nftAddress, uint256 tokenId) {
+        Listing memory listing = s_NFTListed[nftAddress][tokenId];
+        if (listing.price <= 0) {
+            revert MarsKetplace_NotListed(nftAddress, tokenId);
         }
         _;
     }
@@ -78,12 +89,22 @@ contract MarsKetplace {
 
     }
 
+    function buyItem(address nftAddress, uint256 tokenId) external payable isListed(nftAddress, tokenId){
+        Listing memory itemListed = s_NFTListed[nftAddress][tokenId];
+        if(msg.value < itemListed.price){
+            revert MarsKetplace_PriceNotMet(nftAddress, tokenId, itemListed.price);
+        }
+    }
+
 }
 
  
 // list NFTs on our marketplace
 // => approve this contract to sell the NFT on the marketplace (use IERC721)
 
+//create modifiers to check if the requested item is listed, check if it's not already listed when listing a new one
 // any EOA can buy the NFT
-// Update the NFT status to 'sld'
-// withdraw proceeds NFT sales
+// Update the NFT status to 'sold' = make it unavailable to be sold (front-end only?)
+// keep track of NFT sales and seller's balance
+// keep track of who owns which NFT
+// withdraw proceeds of the NFT sales
