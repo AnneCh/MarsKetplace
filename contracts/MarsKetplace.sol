@@ -91,6 +91,7 @@ contract MarsKetplace {
 
     function buyItem(address nftAddress, uint256 tokenId) external payable isListed(nftAddress, tokenId){
         Listing memory itemListed = s_NFTListed[nftAddress][tokenId];
+        //make sure the price is correct
         if(msg.value < itemListed.price){
             revert MarsKetplace_PriceNotMet(nftAddress, tokenId, itemListed.price);
         }
