@@ -29,13 +29,14 @@ contract MintNFT is ERC721, ERC721URIStorage, Ownable {
     {
         _allTokenURIs = uris;
         address to = msg.sender;
-        for (uint i = 0; i < uris.length; i++) {
-            safeMint(to, uris[i]);
+        for (uint256 i = 0; i < _allTokenURIs.length; i++) {
+            string memory uri = _allTokenURIs[i];
+            safeMint(to, uri);
         }
     }
 
     function safeMint(address to, string memory uri)
-        internal
+        public
         onlyOwner
     {
         _tokenIds.increment();
