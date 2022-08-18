@@ -29,6 +29,19 @@ contract MarsKetplace {
         uint256 price
     );
 
+    event NFTBought(
+        address indexed buyer,
+        address indexed nftAddress,
+        uint256 tokenId,
+        uint256 price
+    );
+
+    event ItemDeleted(
+        address owner, 
+        address nftAddress, 
+        uint256 tokenId
+        );
+
     // mapping to keep track of listed nfts with address, tokenId, price but also address of seller
     // NFT contract address -> NFt tokenId -> listing(price and seller)
     mapping(address=> mapping(uint256 => Listing)) private s_NFTListed;
@@ -63,7 +76,7 @@ contract MarsKetplace {
     }
 
     /*
-     * @notice Method to list the pre-minted NFTs on the marsKetplace
+     * @notice Method to list the pre-minted NFTs on the marsKetplace, to buy them, and to cancel a specific listing
      * @param nftAddress: address of one NFT
      * @param tokenID: the token ID of one NFT
      * @param price: sale price of a listed NFT
@@ -95,6 +108,18 @@ contract MarsKetplace {
         if(msg.value < itemListed.price){
             revert MarsKetplace_PriceNotMet(nftAddress, tokenId, itemListed.price);
         }
+        //delete the listing as being part of the listed NFT for sale:
+        delete(s_NFTListed[nftAddress][tokenId]);
+        //now call safeTransferFrom(ddress seller, addresser buyer, tokenId)
+        IERC721(nftAddress).safeTransferFrom(itemListed.seller, msg.sender, tokenId);
+        emit NFTBought(msg.sender, nftAddress, tokenId,itemListed.price);
+    }
+
+    function cancelListing(address nftAddress, uint256 tokenId) external isOwner(nftAddress, tokenId, msg.sender) isListed(nftAddress, tokenId){
+        // delete the listing from s_NFTListed
+        delete (s_NFTListed[nftAddress][tokenId]);
+        // need to emit an event 
+        emit ItemDeleted(msg.sender, nftAddress, tokenId);
     }
 
 }
@@ -107,5 +132,5 @@ contract MarsKetplace {
 // any EOA can buy the NFT
 // Update the NFT status to 'sold' = make it unavailable to be sold (front-end only?)
 // keep track of NFT sales and seller's balance
-// keep track of who owns which NFT
+// keep track of who owns which NFT (maybe for upgrade?)
 // withdraw proceeds of the NFT sales
