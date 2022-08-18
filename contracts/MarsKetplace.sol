@@ -42,8 +42,7 @@ contract MarsKetplace {
         uint256 tokenId
     );
 
-
-
+    address contractOwner;
     // mapping to keep track of listed nfts with address, tokenId, price but also address of seller
     // NFT contract address -> NFt tokenId -> listing(price and seller)
     mapping(address=> mapping(uint256 => Listing)) private s_NFTListed;
@@ -77,6 +76,9 @@ contract MarsKetplace {
         _;
     }
 
+    constructor(){
+        contractOwner = msg.sender;
+    }
     /*
      * @notice Method to list the pre-minted NFTs on the marsKetplace, to buy them, and to cancel a specific listing
      * @param nftAddress: address of one NFT
@@ -86,6 +88,8 @@ contract MarsKetplace {
      * @dev but making the list function parameterizable is a future-proof way to allow buyers to sell it again 
 
     */
+
+    //// Main functions ////
 
     function listItem(address nftAddress, uint256 tokenId, uint256 price) external notListed(nftAddress, tokenId, msg.sender) isOwner(nftAddress, tokenId, msg.sender){
         //chekc that price is not 0
@@ -128,7 +132,21 @@ contract MarsKetplace {
         // only the owner can update the price of an already listed NFT
         s_NFTListed[nftAddress][tokenId].price = newPrice;
         emit ItemListed(msg.sender, nftAddress, tokenId, newPrice);
+    }
 
+    function withdrawSales() external {
+        // check that the address calling this function is the owner of the contract
+        require(contractOwner == msg.sender, "You're not the owner of this contract, you cannot withdraw");
+        uint256 balance = address(this).balance;
+        require(balance > 0, "Balance is 0, nothing to withdraw");
+        (bool success,) = payable(msg.sender).call{value:balance}("");
+        require(success, "Transfer Failed");
+    }
+
+    //// Getter function ////
+    
+    function getListing(address nftAddress, uint256 tokenId) external view returns(Listing memory){
+        return s_NFTListed[nftAddress][tokenId];
     }
 
 }
