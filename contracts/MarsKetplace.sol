@@ -40,7 +40,9 @@ contract MarsKetplace {
         address owner, 
         address nftAddress, 
         uint256 tokenId
-        );
+    );
+
+
 
     // mapping to keep track of listed nfts with address, tokenId, price but also address of seller
     // NFT contract address -> NFt tokenId -> listing(price and seller)
@@ -120,6 +122,13 @@ contract MarsKetplace {
         delete (s_NFTListed[nftAddress][tokenId]);
         // need to emit an event 
         emit ItemDeleted(msg.sender, nftAddress, tokenId);
+    }
+
+    function updateNFTPrice(address nftAddress, uint256 tokenId, uint256 newPrice) external isOwner(nftAddress, tokenId, msg.sender) isListed(nftAddress, tokenId){
+        // only the owner can update the price of an already listed NFT
+        s_NFTListed[nftAddress][tokenId].price = newPrice;
+        emit ItemListed(msg.sender, nftAddress, tokenId, newPrice);
+
     }
 
 }
