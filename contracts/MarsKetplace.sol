@@ -108,10 +108,10 @@ contract MarsKetplace {
 
     }
 
-    function buyItem(address nftAddress, uint256 tokenId) external payable isListed(nftAddress, tokenId){
+    function buyNFT(address nftAddress, uint256 tokenId) external payable isListed(nftAddress, tokenId){
         Listing memory itemListed = s_NFTListed[nftAddress][tokenId];
         //make sure the price is correct
-        if(msg.value < itemListed.price){
+        if(msg.value != itemListed.price){
             revert MarsKetplace_PriceNotMet(nftAddress, tokenId, itemListed.price);
         }
         //delete the listing as being part of the listed NFT for sale:
@@ -147,6 +147,10 @@ contract MarsKetplace {
     
     function getListing(address nftAddress, uint256 tokenId) external view returns(Listing memory){
         return s_NFTListed[nftAddress][tokenId];
+    }
+
+    function getBalance() external view returns(uint256){
+        return address(this).balance;
     }
 
 }

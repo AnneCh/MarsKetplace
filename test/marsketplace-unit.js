@@ -6,7 +6,7 @@ const { developmentChains } = require("../helper-hardhat-config")
 !developmentChains.includes(network.name)
   ? describe.skip
   : describe("Unit MarsKetplace tests", function () {
-      let marsketplace, oneNftDeployed, deployer, player
+      let marsketplace, oneNftDeployed, deployer, buyer
       let price = ethers.utils.parseEther("1")
       const TOKENID = 0
 
@@ -25,6 +25,16 @@ const { developmentChains } = require("../helper-hardhat-config")
       })
 
       describe("List item function", async () => {
+        it("should list and sell an NFT", async () => {
+          await marsketplace.listItem(oneNftDeployed.address, TOKENID, price)
+          const buyerConnected = marsketplace.connect(buyer)
+          await buyerConnected.buyNFT(oneNftDeployed.address, TOKENID, { value: price })
+          const newNFtOwner = await oneNftDeployed.ownerOf(TOKENID)
+          const balance = await marsketplace.getBalance()
+          assert(newOwner.toString() == buyer.address)
+          assert(balance.toString() == price.toString())
+        })
+
         it("Should revert if price is 0", async () => {})
         it("Should revert if the marsKetplace contract is not approved", async () => {})
         it("Should list and emit an event ItemListed", async () => {})
