@@ -34,5 +34,24 @@ const { developmentChains } = require("../helper-hardhat-config")
         it("Should revert if the NFT is already listed", async () => {})
       })
 
-      describe("buyItem function")
+      describe("buyItem function", async () => {
+        it("should revert if NFT is not listed", async () => {})
+        it("should revert if the price isn't correct", async () => {})
+        it("should update the contract's balance", async () => {})
+        it("Should emit an NFTBought event", async () => {})
+      })
+
+      describe("Cancel listing function", async () => {
+        it("Should emit an update ItemListed event", async () => {})
+      })
+
+      describe("withdrawSales function", async () => {
+        it("should revert if the caller is not the contract's owner", async () => {})
+        it("should revert if the balance is 0", async () => {})
+        it("Should revert if bool success is false", async () => {})
+      })
+
+      describe("getListing function", async () => {
+        it("Should get the correct listing", async () => {})
+      })
     })
