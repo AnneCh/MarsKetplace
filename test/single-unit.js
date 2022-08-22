@@ -5,7 +5,7 @@ const { developmentChains } = require("../helper-hardhat-config")
 !developmentChains.includes(network.name)
   ? describe.skip
   : describe("Basic NFT minting tests", function () {
-      let mintNFT, deployer
+      let mintSingle, deployer
       let _name = "Plot On Mars"
       let _symbol = "POM"
 
