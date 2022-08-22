@@ -18,7 +18,6 @@ const { developmentChains } = require("../helper-hardhat-config")
         accounts = await ethers.getSigners()
         deployer = accounts[0]
         buyer = accounts[1]
-
         await deployments.fixture(["all"])
         marsketPlace = await ethers.getContract("MarsKetplace")
         NftMarsketPlace = marsketPlace.connect(deployer)
