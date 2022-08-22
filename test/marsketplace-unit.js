@@ -6,7 +6,7 @@ const { developmentChains } = require("../helper-hardhat-config")
 !developmentChains.includes(network.name)
   ? describe.skip
   : describe("Unit MarsKetplace tests", function () {
-      let marsketplace, oneNftDeployed, deployer, buyer
+      let marsketPlace, oneNftDeployed, NftMarsketPlace, oneNFT, deployer, buyer
       let price = ethers.utils.parseEther("1")
       const TOKENID = 0
 
@@ -18,20 +18,24 @@ const { developmentChains } = require("../helper-hardhat-config")
         accounts = await ethers.getSigners()
         deployer = accounts[0]
         buyer = accounts[1]
+
         await deployments.fixture(["all"])
-        marsketplace = await ethers.getContract("MarsKetplace")
+        marsketPlace = await ethers.getContract("MarsKetplace")
+        NftMarsketPlace = marsketPlace.connect(deployer)
         oneNftDeployed = await ethers.getContract("MintOneToken")
-        await oneNftDeployed.approve(marsketplace.address, TOKENID)
+        oneNFT = oneNftDeployed.connect(deployer)
+        await oneNFT.mintNft()
+        await oneNFT.approve(marsketPlace.address, TOKENID)
       })
 
       describe("List item function", async () => {
         it("should list and sell an NFT", async () => {
-          await marsketplace.listItem(oneNftDeployed.address, TOKENID, price)
-          const buyerConnected = marsketplace.connect(buyer)
+          await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
+          const buyerConnected = marsketPlace.connect(buyer)
           await buyerConnected.buyNFT(oneNftDeployed.address, TOKENID, { value: price })
           const newNFtOwner = await oneNftDeployed.ownerOf(TOKENID)
-          const balance = await marsketplace.getBalance()
-          assert(newOwner.toString() == buyer.address)
+          const balance = await marsketPlace.getBalance()
+          assert(newNFtOwner.toString() == buyer.address)
           assert(balance.toString() == price.toString())
         })
 
