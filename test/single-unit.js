@@ -4,8 +4,8 @@ const { developmentChains } = require("../helper-hardhat-config")
 
 !developmentChains.includes(network.name)
   ? describe.skip
-  : describe("Basic NFT minting tests", function () {
-      let mintSingle, deployer
+  : describe("Basic NFT deployment contract tests", function () {
+      let mintNft, deployer
       let _name = "Plot On Mars"
       let _symbol = "POM"
 
@@ -14,17 +14,21 @@ const { developmentChains } = require("../helper-hardhat-config")
         accounts = await ethers.getSigners()
         deployer = accounts[0]
         await deployments.fixture(["single"])
-        mintSingle = await ethers.getContract("MintOneToken")
+        mintNft = await ethers.getContract("MintOneToken")
       })
 
       describe("Deployment", function () {
         it("Should have the correct name and symbol", async function () {
-          expect(await mintSingle.name()).to.equal(_name)
-          expect(await mintSingle.symbol()).to.equal(_symbol)
+          const tokenCounter = await mintNft.getTokenCounter()
+          const name = await mintNft.name()
+          const symbol = await mintNft.symbol()
+          assert.equal(tokenCounter.toString(), "0")
+          assert.equal(name, _name)
+          assert.equal(symbol, _symbol)
         })
 
         it("should set the right owner", async function () {
-          expect(await mintSingle.owner()).to.equal(deployer.address)
+          expect(await mintNft.owner()).to.equal(deployer.address)
         })
       })
     })
