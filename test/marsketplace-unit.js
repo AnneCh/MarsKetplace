@@ -17,7 +17,7 @@ const { developmentChains } = require("../helper-hardhat-config")
       beforeEach(async () => {
         accounts = await ethers.getSigners()
         deployer = accounts[0]
-        player = accounts[1]
+        buyer = accounts[1]
         await deployments.fixture(["all"])
         marsketplace = await ethers.getContract("MarsKetplace")
         oneNftDeployed = await ethers.getContract("MintOneToken")
