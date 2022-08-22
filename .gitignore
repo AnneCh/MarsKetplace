@@ -3,7 +3,4 @@
 /deployments
 /artifacts
 /cache
-artifacts/@openzeppelin/contracts/access/Ownable.sol/Ownable.dbg.json
-artifacts/@openzeppelin/contracts/token/ERC721/ERC721.sol/ERC721.dbg.json
-artifacts/contracts/MarsKetplace.sol/MarsKetplace.dbg.json
-artifacts/@openzeppelin/contracts/utils/Address.sol/Address.dbg.json
+/essais

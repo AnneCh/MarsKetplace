@@ -1,57 +1,69 @@
 const { network } = require("hardhat")
 const { developmentChains } = require("../helper-hardhat-config")
 const { verify } = require("../utils/verify")
-const { storeImages, storeMetadata } = require("../utils/upload_to_pinata")
+const { storeImages, storeMetadata } = require("../utils/upload-to-pinata")
 
 //NOT FINISHED YET
-const imagesLocation = "./nftImages"
 
-let tokenUris
-if (process.env.UPLOAD_TO_PINATA == "true") {
+const metadataTemplate = {
+  name: "",
+  description: "",
+  image: "",
+}
+const imagesLocation = "./nftImages/"
+
+const tokenUris = [
+  "ipfs://QmaGmVJianGd3wzdfRNFZXWA9UeMdLFMBX5cZZSZjNeckP",
+  "ipfs://QmaGV6P2knFkPdStvPsNXjJjehEysfnK7e4tShJAvpuPrx",
+  "ipfs://QmcdbzSUFhRF98ppNHf83yhPJ2jHjP5Lpuov9Wzi4aYZF4",
+  "ipfs://QmP8W1KEC2td2VPn3tbEYjFBZ2yV6jZh5Fbe2rGjzqCMwS",
+  "ipfs://QmdL2QjcLPjd1RLwHK1GNuNQSt5b4ZXupuaGYtUi3Lqqz5",
+  "ipfs://QmaJqsMKbFLLTZszY2rprPRncDReLTnhHVdz2U7aScxFNS",
+  "ipfs://QmYeioLfMcTUNSABndwqJz7sjaeA7quF1fMGq2tziSE2T3",
+  "ipfs://QmW7nRHE7J5L36n9NvxspwNfSbEPRcFvDF4kUkscZHehyZ",
+  "ipfs://QmUcCwpskbvQydNa3rcSpCftsPAmBgovn6WnZYTeZw4NpU",
+  "ipfs://QmdyTVfRymf2kFrrfdNq2FGHYX4gx5YDT1DvgmkccSee1U",
+]
+
+module.exports = async ({ getNamedAccounts, deployments }) => {
+  const { deploy, log } = deployments
+  const { deployer } = await getNamedAccounts()
+  const chainId = network.config.chainId
+
+  if (process.env.UPLOAD_TO_PINATA == "true") {
     tokenUris = await handleTokenUris()
+  }
+
+  //params = [tokenUris]
+
+  const mintNFT = await deploy("MintNFT", {
+    from: deployer,
+    args: "",
+    log: true,
+    waitConfirmations: network.config.waitConfirmations,
+  })
+
+  //verifying contract on etherscan
+  if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
+    log("Verifying...")
+    await verify(mintNFT.address)
+  }
 }
 
 async function handleTokenUris() {
-    //through the doc upload_to_pinata, we grab the newly uploaded images to pinata
-    // add a metadata for each, grab the data and can finally return the tokenUris list to pass into our deploy function
-    tokenUris = []
-    const { responses: imageResponses, files } = await storeImages(imagesLocation)
-    for (imageIndex in imageResponses) {
-        let tokenUriMetadata = { ...metadataTemplate }
-        tokenUriMetadata.name = files[imageIndex].replace(".png", " NFT token")
-        tokenUriMetadata.description = `Congratulations! You own your very own Plot On Mars via this NFT, ${tokenUriMetadata.name}`
-        tokenUriMetadata.image = `ipfs://${imageResponses[imageIndex].IpfsHash}`
-        console.log(`Uploading ${tokenUriMetadata.name}...`)
-        const metadataUploadResponse = await storeMetadata(tokenUriMetadata)
-        tokenUris.push(`ipfs://${metadataUploadResponse.IpfsHash}`)
-    }
-    console.log(`token Uris uploaded! They are: ${tokenUris} `)
-    return tokenUris
+  const { responses: imageUploadResponses, files } = await storeImages(imagesLocation)
+  for (responseIndex in imageUploadResponses) {
+    let metadata = { ...metadataTemplate }
+    metadata.name = files[responseIndex].replace(".png", "")
+    metadata.description = `You now own your very own plot of land on Mars! Your NFT token is ${metadata.name}`
+    metadata.image = `ipfs://${imageUploadResponses[responseIndex].IpfsHash}`
+    console.log(`Uploading ${metadata.name}...`)
+    const metadataUploadResponse = await storeMetadata(metadata)
+    tokenUris.push(`ipfs://${metadataUploadResponse.IpfsHash}`)
+  }
+  console.log("Token URIs uploaded! They are:")
+  console.log(tokenUris)
+  return tokenUris
 }
 
-module.exports = async ({ getNamedAccounts, deployments }) => {
-    const { deploy, log } = deployments
-    const { deployer } = await getNamedAccounts()
-    const chainId = network.config.chainId
-
-    params = []
-
-    const mintNFT = await deploy("MintNFT", {
-        from: deployer,
-        args: params,
-        log: true,
-        waitConfirmations: network.config.waitConfirmations,
-    })
-
-    // get the IPFS hashes of our tokenURIs
-
-    //verifying contract on etherscan
-    if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
-        log("Verifying...")
-        await verify(mintNFT.address, params)
-    }
-
-    await storeImages(imagesLocation)
-}
-
-module.exports.tags = ["all", "mintnft"]
+module.exports.tags = ["all", "mintnft", "main"]

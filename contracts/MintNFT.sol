@@ -4,41 +4,75 @@
 
 pragma solidity ^0.8.7;
 
-
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract MintNFT is ERC721URIStorage, Ownable {
+contract MintNFT is ERC721, ERC721URIStorage, Ownable {
 
-    //using Counters; library to secure incrementation by 1 only
+    //Helpers
     using Counters for Counters.Counter;
-    Counters.Counter private _tokenIds;
-    uint256 public tokenId;
 
-    // list of all the token URIs
-    string[] internal _allTokenURIs;
-    //from there, write a function that will pick the token uri according to the tokenID=> if mint token id is 1, then the NFT#1 is to be minted
-    //and the first URI of the list must be set
-    string internal _tokenURI;
+    Counters.Counter private _tokenIds;
+    string[] public _allTokenURIs;
+    mapping(uint256 => string) public _IDtoURI;
+
+    event NFTMinted(uint256 tokenId, string uri);
     
     constructor() ERC721("Plot On Mars", "POM") {}
 
 
-    //first, write a mint() function calling _safeMint() and _setTokenURI
-    function safeMint() public onlyOwner {
+    function bulkMint(string[] memory uris)
+        public
+        onlyOwner
+    {
+        _allTokenURIs = uris;
+        address to = msg.sender;
+        for (uint256 i = 0; i < _allTokenURIs.length; i++) {
+            string memory uri = _allTokenURIs[i];
+            safeMint(to, uri);
+        }
+    }
+
+    function safeMint(address to, string memory uri)
+        public
+        onlyOwner
+    {
         _tokenIds.increment();
-        tokenId = _tokenIds.current();
-        _safeMint(msg.sender, tokenId);
-        //_setTokenURI(tokenId,_tokenURI); write that function
+        uint256 tokenId = _tokenIds.current();
+        _safeMint(to, tokenId);
+        _setTokenURI(tokenId, uri);
+        _IDtoURI[tokenId]=uri;
+        emit NFTMinted(tokenId, uri);
     }
 
-    function getTokenId() public returns(uint256){
-        tokenId = _tokenIds.current();
-        return tokenId;
+
+    function getTokenId() public view returns(uint256){
+        return _tokenIds.current();
     }
+
+
+    // function to view a specific URI related to a tokenID
+    function viewURIs(uint256 i) public view returns(string memory){
+        string memory unique = _allTokenURIs[i];
+        return unique;
+    }
+
+
+     // The following functions are overrides required by Solidity.
+
+    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+        super._burn(tokenId);
+    }
+
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
+    {
+        return super.tokenURI(tokenId);
+    }
+
 }
-
-// list NFTs URIs /pinata
-// mintNFT 
-// create a for loop to mint the NFTs in a batch and not one after the other => mint everything in one single transaction
