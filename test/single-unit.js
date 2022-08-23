@@ -26,9 +26,5 @@ const { developmentChains } = require("../helper-hardhat-config")
           assert.equal(name, _name)
           assert.equal(symbol, _symbol)
         })
-
-        it("should set the right owner", async function () {
-          expect(await mintNft.owner()).to.equal(deployer.address)
-        })
       })
     })
