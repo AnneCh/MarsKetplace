@@ -35,7 +35,7 @@ const { developmentChains } = require("../helper-hardhat-config")
           const newNFtOwner = await oneNftDeployed.ownerOf(TOKENID)
           const balance = await marsketPlace.getBalance()
           assert(newNFtOwner.toString() == buyer.address)
-          assert(balance.toString() == price.toString())
+          assert(balance.toString() == price.toString()) // balance of the MarsKetplace contract is the same as seller's balance
         })
 
         it("Should revert if price is 0", async () => {
@@ -44,11 +44,13 @@ const { developmentChains } = require("../helper-hardhat-config")
             NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, 0)
           ).to.be.revertedWith("MarsKetplace__PriceCantBeZero")
         })
+
         it("Should revert if the marsKetplace contract is not approved", async () => {
           await expect(
             NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
           ).to.be.revertedWith("MarsKetplace__NotApproved")
         })
+
         it("Should list and emit an event ItemListed", async () => {
           await oneNFT.approve(marsketPlace.address, TOKENID)
           const event = `ItemListed(${deployer.address}, ${oneNftDeployed.address}, ${TOKENID}, ${price})`
@@ -56,7 +58,15 @@ const { developmentChains } = require("../helper-hardhat-config")
             event
           )
         })
-        it("Should only allow the owner to list an NFT", async () => {})
+
+        it("Should only allow the owner to list an NFT", async () => {
+          const buyerConnected = marsketPlace.connect(buyer)
+          await oneNFT.approve(buyer.address, TOKENID)
+          await expect(
+            buyerConnected.listItem(oneNftDeployed.address, TOKENID, price)
+          ).to.be.revertedWith("MarsKetplace__NotOwner")
+        })
+
         it("Should revert if the NFT is already listed", async () => {})
       })
 
