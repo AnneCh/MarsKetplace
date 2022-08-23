@@ -24,11 +24,11 @@ const { developmentChains } = require("../helper-hardhat-config")
         oneNftDeployed = await ethers.getContract("MintOneToken")
         oneNFT = oneNftDeployed.connect(deployer)
         await oneNFT.mintNft()
-        await oneNFT.approve(marsketPlace.address, TOKENID)
       })
 
       describe("List item function", async () => {
         it("should list and sell an NFT", async () => {
+          await oneNFT.approve(marsketPlace.address, TOKENID)
           await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
           const buyerConnected = marsketPlace.connect(buyer)
           await buyerConnected.buyNFT(oneNftDeployed.address, TOKENID, { value: price })
@@ -38,8 +38,17 @@ const { developmentChains } = require("../helper-hardhat-config")
           assert(balance.toString() == price.toString())
         })
 
-        it("Should revert if price is 0", async () => {})
-        it("Should revert if the marsKetplace contract is not approved", async () => {})
+        it("Should revert if price is 0", async () => {
+          await oneNFT.approve(marsketPlace.address, TOKENID)
+          await expect(
+            NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, 0)
+          ).to.be.revertedWith("PriceCantBeZero")
+        })
+        it("Should revert if the marsKetplace contract is not approved", async () => {
+          await expect(
+            NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
+          ).to.be.revertedWith("NotApproved")
+        })
         it("Should list and emit an event ItemListed", async () => {})
         it("Should only allow the owner to list an NFT", async () => {})
         it("Should revert if the NFT is already listed", async () => {})
