@@ -42,14 +42,18 @@ const { developmentChains } = require("../helper-hardhat-config")
           await oneNFT.approve(marsketPlace.address, TOKENID)
           await expect(
             NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, 0)
-          ).to.be.revertedWith("PriceCantBeZero")
+          ).to.be.revertedWith("MarsKetplace__PriceCantBeZero")
         })
         it("Should revert if the marsKetplace contract is not approved", async () => {
           await expect(
             NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
-          ).to.be.revertedWith("NotApproved")
+          ).to.be.revertedWith("MarsKetplace__NotApproved")
         })
-        it("Should list and emit an event ItemListed", async () => {})
+        it("Should list and emit an event ItemListed", async () => {
+          await oneNFT.approve(marsketPlace.address, TOKENID)
+          const listing = await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
+          expect(listing).to.emit("ItemListed")
+        })
         it("Should only allow the owner to list an NFT", async () => {})
         it("Should revert if the NFT is already listed", async () => {})
       })
