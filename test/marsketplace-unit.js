@@ -51,8 +51,10 @@ const { developmentChains } = require("../helper-hardhat-config")
         })
         it("Should list and emit an event ItemListed", async () => {
           await oneNFT.approve(marsketPlace.address, TOKENID)
-          const listing = await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
-          expect(listing).to.emit("ItemListed")
+          const event = `ItemListed(${deployer.address}, ${oneNftDeployed.address}, ${TOKENID}, ${price})`
+          expect(await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)).to.emit(
+            event
+          )
         })
         it("Should only allow the owner to list an NFT", async () => {})
         it("Should revert if the NFT is already listed", async () => {})
