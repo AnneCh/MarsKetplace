@@ -7,12 +7,12 @@ pragma solidity ^0.8.7;
 // import IERC721 in order to approve our contract to sell the NFT on the behalf of our minter contract
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
-error MarsKetplace_PriceCantBeZero();
-error MarsKetplace_NotApproved();
-error MarsKetplace_AlreadyListed(address nftAddress, uint256 tokenId);
-error MarsKetplace_NotOwner();
-error MarsKetplace_NotListed(address nftAddress, uint256 tokenId);
-error MarsKetplace_PriceNotMet(address nftAddress, uint256 tokenId, uint256 price);
+error MarsKetplace__PriceCantBeZero();
+error MarsKetplace__NotApproved();
+error MarsKetplace__AlreadyListed(address nftAddress, uint256 tokenId);
+error MarsKetplace__NotOwner();
+error MarsKetplace__NotListed(address nftAddress, uint256 tokenId);
+error MarsKetplace__PriceNotMet(address nftAddress, uint256 tokenId, uint256 price);
 
 contract MarsKetplace {
 
@@ -52,7 +52,7 @@ contract MarsKetplace {
     modifier notListed(address nftAddress, uint256 tokenId,address owner){
         Listing memory listing = s_NFTListed[nftAddress][tokenId];
         if (listing.price > 0) {
-            revert MarsKetplace_AlreadyListed(nftAddress, tokenId);
+            revert MarsKetplace__AlreadyListed(nftAddress, tokenId);
         }
         _;
     }
@@ -61,7 +61,7 @@ contract MarsKetplace {
     modifier isListed(address nftAddress, uint256 tokenId) {
         Listing memory listing = s_NFTListed[nftAddress][tokenId];
         if (listing.price <= 0) {
-            revert MarsKetplace_NotListed(nftAddress, tokenId);
+            revert MarsKetplace__NotListed(nftAddress, tokenId);
         }
         _;
     }
@@ -71,7 +71,7 @@ contract MarsKetplace {
         IERC721 nft = IERC721(nftAddress);
         address owner = nft.ownerOf(tokenId);
         if (spender != owner) {
-            revert MarsKetplace_NotOwner();
+            revert MarsKetplace__NotOwner();
         }
         _;
     }
@@ -94,12 +94,12 @@ contract MarsKetplace {
     function listItem(address nftAddress, uint256 tokenId, uint256 price) external notListed(nftAddress, tokenId, msg.sender) isOwner(nftAddress, tokenId, msg.sender){
         //chekc that price is not 0
         if (price <= 0) {
-            revert MarsKetplace_PriceCantBeZero();
+            revert MarsKetplace__PriceCantBeZero();
         }
         //check that this contract has the approval to sell the token - openzeppelin getApproved() from IERC721
         IERC721 nft = IERC721(nftAddress);
         if (nft.getApproved(tokenId) != address(this)){
-            revert MarsKetplace_NotApproved();
+            revert MarsKetplace__NotApproved();
         }
         // update the listing s_NFTListed
         s_NFTListed[nftAddress][tokenId] = Listing(price, msg.sender);
@@ -112,7 +112,7 @@ contract MarsKetplace {
         Listing memory itemListed = s_NFTListed[nftAddress][tokenId];
         //make sure the price is correct
         if(msg.value != itemListed.price){
-            revert MarsKetplace_PriceNotMet(nftAddress, tokenId, itemListed.price);
+            revert MarsKetplace__PriceNotMet(nftAddress, tokenId, itemListed.price);
         }
         //delete the listing as being part of the listed NFT for sale:
         delete(s_NFTListed[nftAddress][tokenId]);
