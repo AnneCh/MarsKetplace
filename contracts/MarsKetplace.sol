@@ -6,6 +6,8 @@ pragma solidity ^0.8.7;
 
 // import IERC721 in order to approve our contract to sell the NFT on the behalf of our minter contract
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
 
 error MarsKetplace__PriceCantBeZero();
 error MarsKetplace__NotApproved();
@@ -14,7 +16,7 @@ error MarsKetplace__NotOwner();
 error MarsKetplace__NotListed(address nftAddress, uint256 tokenId);
 error MarsKetplace__PriceNotMet(address nftAddress, uint256 tokenId, uint256 price);
 
-contract MarsKetplace {
+contract MarsKetplace is ReentrancyGuard {
 
     //keep track of price and seller, to be added to mapping
     struct Listing{
@@ -32,14 +34,14 @@ contract MarsKetplace {
     event NFTBought(
         address indexed buyer,
         address indexed nftAddress,
-        uint256 tokenId,
+        uint256 indexed tokenId,
         uint256 price
     );
 
     event ItemDeleted(
-        address owner, 
-        address nftAddress, 
-        uint256 tokenId
+        address indexed owner, 
+        address indexed nftAddress, 
+        uint256 indexed tokenId
     );
 
     address contractOwner;
