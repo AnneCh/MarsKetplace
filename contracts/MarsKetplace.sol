@@ -47,11 +47,11 @@ contract MarsKetplace is ReentrancyGuard {
     address contractOwner;
     // mapping to keep track of listed nfts with address, tokenId, price but also address of seller
     // NFT contract address -> NFt tokenId -> listing(price and seller)
-    mapping(address=> mapping(uint256 => Listing)) private s_NFTListed;
+    mapping(address => mapping(uint256 => Listing)) private s_NFTListed;
 
     //  modifier to make sure the NFT is not already listed
     // get the tokenId and address, create a listing, and if there is a price, it means the nft is alreayd listed
-    modifier notListed(address nftAddress, uint256 tokenId, address owner){
+    modifier notListed(address nftAddress, uint256 tokenId, address owner) {
         Listing memory listing = s_NFTListed[nftAddress][tokenId];
         if (listing.price > 0) {
             revert MarsKetplace__AlreadyListed(nftAddress, tokenId);
@@ -62,7 +62,7 @@ contract MarsKetplace is ReentrancyGuard {
     // checking if the tokenId/nftAddress is correctly listed
     modifier isListed(address nftAddress, uint256 tokenId) {
         Listing memory listing = s_NFTListed[nftAddress][tokenId];
-        if (listing.price <= 0) {
+        if (listing.price == 0) {
             revert MarsKetplace__NotListed(nftAddress, tokenId);
         }
         _;
@@ -114,7 +114,7 @@ contract MarsKetplace is ReentrancyGuard {
         Listing memory itemListed = s_NFTListed[nftAddress][tokenId];
         //make sure the price is correct
         if(msg.value != itemListed.price){
-            revert MarsKetplace__PriceNotMet(nftAddress, tokenId, itemListed.price);
+            revert MarsKetplace__PriceNotMet(nftAddress, tokenId, msg.value);
         }
         //delete the listing as being part of the listed NFT for sale:
         delete(s_NFTListed[nftAddress][tokenId]);

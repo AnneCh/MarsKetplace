@@ -75,14 +75,22 @@ const { developmentChains } = require("../helper-hardhat-config")
       })
 
       describe("buyNFT function", async () => {
-        it.only("should revert if NFT is not listed", async () => {
+        // it("should revert if NFT is not listed", async () => {
+        //   const buyerConnected = marsketPlace.connect(buyer)
+        //   const error = `MarsKetplace__NotListed("${oneNftDeployed.address}", ${TOKENID})`
+        //   await expect(
+        //     buyerConnected.buyNFT(oneNftDeployed.address, TOKENID, price)
+        //   ).to.be.revertedWith(error)
+        // })
+        it("should revert if the price is incorrect", async () => {
+          let wrongPrice = ethers.utils.parseEther("0.01")
+          await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
           const buyerConnected = marsketPlace.connect(buyer)
-          const error = `MarsKetplace__NotListed("${oneNftDeployed.address}", ${TOKENID})`
+          const punk = `MarsKetplace__PriceNotMet("${oneNftDeployed.address}", ${TOKENID}, ${wrongPrice})`
           await expect(
-            buyerConnected.buyNFT(oneNftDeployed.address, TOKENID, price)
-          ).to.be.revertedWith(error)
+            buyerConnected.buyNFT(oneNftDeployed.address, TOKENID, { value: 0.01 })
+          ).to.be.revertedWith(punk)
         })
-        it("should revert if the price is 0", async () => {})
         it("should update the contract's balance", async () => {})
         it("Should emit an NFTBought event", async () => {})
       })
