@@ -65,7 +65,7 @@ const { developmentChains } = require("../helper-hardhat-config")
           ).to.be.revertedWith("MarsKetplace__NotOwner")
         })
 
-        it.only("Should revert if the NFT is already listed", async () => {
+        it("Should revert if the NFT is already listed", async () => {
           await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
           const error = `MarsKetplace__AlreadyListed("${oneNftDeployed.address}", ${TOKENID})`
           await expect(
