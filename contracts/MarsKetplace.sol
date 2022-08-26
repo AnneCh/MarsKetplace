@@ -51,7 +51,7 @@ contract MarsKetplace is ReentrancyGuard {
 
     //  modifier to make sure the NFT is not already listed
     // get the tokenId and address, create a listing, and if there is a price, it means the nft is alreayd listed
-    modifier notListed(address nftAddress, uint256 tokenId,address owner){
+    modifier notListed(address nftAddress, uint256 tokenId, address owner){
         Listing memory listing = s_NFTListed[nftAddress][tokenId];
         if (listing.price > 0) {
             revert MarsKetplace__AlreadyListed(nftAddress, tokenId);
@@ -156,14 +156,3 @@ contract MarsKetplace is ReentrancyGuard {
     }
 
 }
-
- 
-// list NFTs on our marketplace
-// => approve this contract to sell the NFT on the marketplace (use IERC721)
-
-//create modifiers to check if the requested item is listed, check if it's not already listed when listing a new one
-// any EOA can buy the NFT
-// Update the NFT status to 'sold' = make it unavailable to be sold (front-end only?)
-// keep track of NFT sales and seller's balance
-// keep track of who owns which NFT (maybe for upgrade?)
-// withdraw proceeds of the NFT sales
