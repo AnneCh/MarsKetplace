@@ -62,7 +62,7 @@ contract MarsKetplace is ReentrancyGuard {
     // checking if the tokenId/nftAddress is correctly listed
     modifier isListed(address nftAddress, uint256 tokenId) {
         Listing memory listing = s_NFTListed[nftAddress][tokenId];
-        if (listing.price == 0) {
+        if (listing.price <= 0) {
             revert MarsKetplace__NotListed(nftAddress, tokenId);
         }
         _;

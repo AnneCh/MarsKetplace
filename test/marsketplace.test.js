@@ -79,7 +79,7 @@ const { developmentChains } = require("../helper-hardhat-config")
           const buyerConnected = marsketPlace.connect(buyer)
           const error = `MarsKetplace__NotListed("${oneNftDeployed.address}", ${TOKENID})`
           await expect(
-            buyerConnected.buyNFT(oneNftDeployed.address, TOKENID, price)
+            buyerConnected.buyNFT(oneNftDeployed.address, TOKENID, { value: price })
           ).to.be.revertedWith(error)
         })
         it("should revert if the price is incorrect", async () => {
