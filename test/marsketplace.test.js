@@ -82,13 +82,13 @@ const { developmentChains } = require("../helper-hardhat-config")
         //     buyerConnected.buyNFT(oneNftDeployed.address, TOKENID, price)
         //   ).to.be.revertedWith(error)
         // })
-        it("should revert if the price is incorrect", async () => {
-          let wrongPrice = ethers.utils.parseEther("0.01")
+        it.only("should revert if the price is incorrect", async () => {
+          let wrongPrice = ethers.utils.parseEther("0.1")
           await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
           const buyerConnected = marsketPlace.connect(buyer)
           const punk = `MarsKetplace__PriceNotMet("${oneNftDeployed.address}", ${TOKENID}, ${wrongPrice})`
           await expect(
-            buyerConnected.buyNFT(oneNftDeployed.address, TOKENID, { value: 0.01 })
+            buyerConnected.buyNFT(oneNftDeployed.address, TOKENID, { value: wrongPrice })
           ).to.be.revertedWith(punk)
         })
         it("should update the contract's balance", async () => {})
