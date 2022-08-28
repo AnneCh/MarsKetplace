@@ -28,16 +28,6 @@ const { developmentChains } = require("../helper-hardhat-config")
       })
 
       describe("List item function", async () => {
-        it("should list and sell an NFT", async () => {
-          await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
-          const buyerConnected = marsketPlace.connect(buyer)
-          await buyerConnected.buyNFT(oneNftDeployed.address, TOKENID, { value: price })
-          const newNFtOwner = await oneNftDeployed.ownerOf(TOKENID)
-          const balance = await marsketPlace.getBalance()
-          assert(newNFtOwner.toString() == buyer.address)
-          assert(balance.toString() == price.toString()) // balance of the MarsKetplace contract is the same as seller's balance
-        })
-
         it("Should revert if price is 0", async () => {
           await expect(
             NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, 0)
@@ -91,9 +81,27 @@ const { developmentChains } = require("../helper-hardhat-config")
             buyerConnected.buyNFT(oneNftDeployed.address, TOKENID, { value: wrongPrice })
           ).to.be.revertedWith(punk)
         })
-        it("should update the contract's balance", async () => {})
+        it("should update the contract's balance", async () => {
+          await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
+          const buyerConnected = marsketPlace.connect(buyer)
+          await buyerConnected.buyNFT(oneNftDeployed.address, TOKENID, { value: price })
+          const balance = await marsketPlace.getBalance()
+          assert(balance.toString() == price.toString()) // works for one sale, but not if several sales have been made
+        })
+
+        it("should delete the purchased NFT from the s_NFTListed mapping", async () => {})
         it("Should emit an NFTBought event", async () => {})
       })
+
+      // it("should list and sell an NFT", async () => {
+      //   await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
+      //   const buyerConnected = marsketPlace.connect(buyer)
+      //   await buyerConnected.buyNFT(oneNftDeployed.address, TOKENID, { value: price })
+      //   const newNFtOwner = await oneNftDeployed.ownerOf(TOKENID)
+      //   const balance = await marsketPlace.getBalance()
+      //   assert(newNFtOwner.toString() == buyer.address)
+      //   assert(balance.toString() == price.toString()) // balance of the MarsKetplace contract is the same as seller's balance
+      // })
 
       describe("Cancel listing function", async () => {
         it("Should emit an update ItemListed event", async () => {})
