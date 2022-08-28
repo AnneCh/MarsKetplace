@@ -39,7 +39,6 @@ contract MarsKetplace is ReentrancyGuard {
     );
 
     event ItemDeleted(
-        address indexed owner, 
         address indexed nftAddress, 
         uint256 indexed tokenId
     );
@@ -127,7 +126,7 @@ contract MarsKetplace is ReentrancyGuard {
         // delete the listing from s_NFTListed
         delete (s_NFTListed[nftAddress][tokenId]);
         // need to emit an event 
-        emit ItemDeleted(msg.sender, nftAddress, tokenId);
+        emit ItemDeleted(nftAddress, tokenId);
     }
 
     function updateNFTPrice(address nftAddress, uint256 tokenId, uint256 newPrice) external isOwner(nftAddress, tokenId, msg.sender) isListed(nftAddress, tokenId){

@@ -108,7 +108,27 @@ const { developmentChains } = require("../helper-hardhat-config")
       //   assert(newNFtOwner.toString() == buyer.address)
 
       describe("Cancel listing function", async () => {
-        it("Should emit an update ItemListed event", async () => {})
+        it.only("should revert if the msg.sender is not the owner", async () => {
+          await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
+          const buyerConnected = marsketPlace.connect(buyer)
+          await expect(
+            buyerConnected.cancelListing(oneNftDeployed.address, TOKENID)
+          ).to.be.revertedWith("MarsKetplace__NotOwner")
+        })
+        it("should revert if the NFT is not listed", async () => {
+          const nothere = `MarsKetplace__NotListed("${oneNftDeployed.address}", ${TOKENID})`
+          await expect(
+            NftMarsketPlace.cancelListing(oneNftDeployed.address, TOKENID)
+          ).to.be.revertedWith(nothere)
+        })
+
+        it("Should emit an update ItemListed event", async () => {
+          await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
+          const itemdeleted = `ItemDeleted(${oneNftDeployed.address}, ${TOKENID})`
+          expect(await NftMarsketPlace.cancelListing(oneNftDeployed.address, TOKENID)).to.emit(
+            itemdeleted
+          )
+        })
       })
 
       describe("withdrawSales function", async () => {
