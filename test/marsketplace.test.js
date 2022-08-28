@@ -156,7 +156,36 @@ const { developmentChains } = require("../helper-hardhat-config")
         })
       })
 
-      describe("getListing function", async () => {
-        it("Should get the correct listing", async () => {})
+      describe("Testing updateNFTPrice()", async () => {
+        it("Should only allow the owner to update the price", async () => {
+          const newPrice = ethers.utils.parseEther("3")
+          await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
+          const buyerConnected = marsketPlace.connect(buyer)
+          await expect(
+            buyerConnected.updateNFTPrice(oneNftDeployed.address, TOKENID, newPrice)
+          ).to.be.revertedWith("MarsKetplace__NotOwner")
+        })
+        it("Should revert if the NFT is not listed", async () => {
+          const newPrice = ethers.utils.parseEther("3")
+          const nothere = `MarsKetplace__NotListed("${oneNftDeployed.address}", ${TOKENID})`
+          await expect(
+            NftMarsketPlace.updateNFTPrice(oneNftDeployed.address, TOKENID, newPrice)
+          ).to.be.revertedWith(nothere)
+        })
+        it("Should emit an ItemListed event", async () => {
+          const newPrice = ethers.utils.parseEther("3")
+          await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
+          const updated = `ItemListed(${deployer.address}, ${oneNftDeployed.address}, ${TOKENID}, ${newPrice})`
+          expect(
+            await NftMarsketPlace.updateNFTPrice(oneNftDeployed.address, TOKENID, newPrice)
+          ).to.emit(updated)
+        })
       })
+
+      // describe("getListing function", async () => {
+      //   it("Should get the correct listing", async () => {
+      //     await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
+      //     // should return the listing of s_NFTListed, including the nft address, its tokenID,
+      //     // it's owner's address, and its price
+      //   })
     })
