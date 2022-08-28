@@ -89,7 +89,12 @@ const { developmentChains } = require("../helper-hardhat-config")
           assert(balance.toString() == price.toString()) // works for one sale, but not if several sales have been made
         })
 
-        it("should delete the purchased NFT from the s_NFTListed mapping", async () => {})
+        it("should delete the purchased NFT from the s_NFTListed mapping", async () => {
+          await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
+          const buyerConnected = marsketPlace.connect(buyer)
+          await buyerConnected.buyNFT(oneNftDeployed.address, TOKENID, { value: price })
+          expect(marsketPlace.getListing(oneNftDeployed.address, TOKENID)).to.be.reverted
+        })
         it("Should emit an NFTBought event", async () => {})
       })
 
