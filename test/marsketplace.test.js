@@ -105,10 +105,8 @@ const { developmentChains } = require("../helper-hardhat-config")
         })
       })
 
-      //   assert(newNFtOwner.toString() == buyer.address)
-
       describe("Cancel listing function", async () => {
-        it.only("should revert if the msg.sender is not the owner", async () => {
+        it("should revert if the msg.sender is not the owner", async () => {
           await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
           const buyerConnected = marsketPlace.connect(buyer)
           await expect(
@@ -132,9 +130,30 @@ const { developmentChains } = require("../helper-hardhat-config")
       })
 
       describe("withdrawSales function", async () => {
-        it("should revert if the caller is not the contract's owner", async () => {})
-        it("should revert if the balance is 0", async () => {})
-        it("Should revert if bool success is false", async () => {})
+        it("should revert if the caller is not the contract's owner", async () => {
+          await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
+          const buyerConnected = marsketPlace.connect(buyer)
+          await buyerConnected.buyNFT(oneNftDeployed.address, TOKENID, { value: price })
+          await expect(buyerConnected.withdrawSales()).to.be.revertedWith(
+            "You're not the owner of this contract, you cannot withdraw"
+          )
+        })
+        it("should revert if the balance is 0", async () => {
+          await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
+          await expect(NftMarsketPlace.withdrawSales()).to.be.revertedWith(
+            "Balance is 0, nothing to withdraw"
+          )
+        })
+        it("Should correctly transfer the contract's balance to the contract's owner/deployer", async () => {
+          await NftMarsketPlace.listItem(oneNftDeployed.address, TOKENID, price)
+          const buyerConnected = marsketPlace.connect(buyer)
+          await buyerConnected.buyNFT(oneNftDeployed.address, TOKENID, { value: price })
+          let balance = await marsketPlace.getBalance()
+          assert(balance.toString() == price.toString())
+          await NftMarsketPlace.withdrawSales()
+          balance = await marsketPlace.getBalance()
+          assert(balance.toString() == "0")
+        })
       })
 
       describe("getListing function", async () => {
