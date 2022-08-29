@@ -92,7 +92,7 @@ contract MarsKetplace is ReentrancyGuard {
 
     //// Main functions ////
 
-    function listItem(address nftAddress, uint256 tokenId, uint256 price) external notListed(nftAddress, tokenId, msg.sender) isOwner(nftAddress, tokenId, msg.sender){
+    function listNft(address nftAddress, uint256 tokenId, uint256 price) external notListed(nftAddress, tokenId, msg.sender) isOwner(nftAddress, tokenId, msg.sender){
         //chekc that price is not 0
         if (price <= 0) {
             revert MarsKetplace__PriceCantBeZero();
