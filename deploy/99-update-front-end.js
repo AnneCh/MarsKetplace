@@ -23,7 +23,7 @@ async function updateContractAddresses() {
       contractAddresses[chainId]["MarsKetplace"].push(marsKetplace.address)
     }
   } else {
-    contractAddresses[chainId] = marsKetplace.address
+    contractAddresses[chainId] = { MarsKetplace: [marsKetplace.address] }
   }
   //write data to the JSON file
   fs.writeFileSync(frontEndContractsFile, JSON.stringify(contractAddresses))
