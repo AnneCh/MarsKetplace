@@ -1,6 +1,7 @@
 // update the front end to store the contract address
 
 const { ethers, network } = require("hardhat")
+const fs = require("fs")
 const frontEndContractsFile = "../FrontEndMarsKetplace/constants/networkMappings.json"
 
 module.exports = async function () {
@@ -22,7 +23,7 @@ async function updateContractAddresses() {
       contractAddresses[chainId]["MarsKetplace"].push(marsKetplace.address)
     }
   } else {
-    contractAddresses[chainId]["MarsKetplace"] = marsKetplace.address
+    contractAddresses[chainId] = marsKetplace.address
   }
   //write data to the JSON file
   fs.writeFileSync(frontEndContractsFile, JSON.stringify(contractAddresses))
