@@ -2,8 +2,8 @@
 
 //NOT FINISHED YET
 
-const { ethers } = require("hardhat")
-
+const { ethers, network } = require("hardhat")
+const { moveBlocks } = require(".../utils/move-blocks")
 const PRICE = ethers.utils.parseEther("1")
 
 async function mintAndList() {
@@ -22,6 +22,10 @@ async function mintAndList() {
   const listTx = await marsKetplace.listNft(nftMint.address, tokenId, PRICE)
   await listTx.wait(1)
   console.log("NFT successfully listed on the MarsKetplace!")
+
+  if (network.config.chainId == "31337") {
+    await moveBlocks(2, (sleepAmount = 1000))
+  }
 }
 
 mintAndList()
