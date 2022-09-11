@@ -3,7 +3,7 @@
 const { network } = require("hardhat")
 
 function sleep(timeInMs) {
-  return new Promise((resolve) => setTimeOut(resolve, timeInMs))
+  return new Promise((resolve) => setTimeout(resolve, timeInMs))
 }
 
 async function moveBlocks(amount, sleepAmount = 0) {

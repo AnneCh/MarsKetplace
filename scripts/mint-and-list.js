@@ -3,7 +3,7 @@
 //NOT FINISHED YET
 
 const { ethers, network } = require("hardhat")
-const { moveBlocks } = require(".../utils/move-blocks")
+const { moveBlocks } = require("../utils/move-blocks")
 const PRICE = ethers.utils.parseEther("1")
 
 async function mintAndList() {
