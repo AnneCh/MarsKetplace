@@ -1,7 +1,7 @@
 const { ethers, network } = require("hardhat")
 const { moveBlocks } = require("../utils/move-blocks")
 
-const TOKEN_ID = 0
+const TOKEN_ID = 3
 
 async function cancel() {
   const marsKetplace = await ethers.getContract("MarsKetplace")

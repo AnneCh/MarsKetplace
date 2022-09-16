@@ -1,5 +1,4 @@
 //move transaction block in front so to have it confirmed on hardhat to update the DB
-
 const { network } = require("hardhat")
 
 function sleep(timeInMs) {
