@@ -3,12 +3,28 @@
 const { ethers, network } = require("hardhat")
 const fs = require("fs")
 const frontEndContractsFile = "../FrontEndMarsKetplace/constants/networkMappings.json"
+const frontEndABILocation = "../FrontEndMarsKetplace/constants/"
 
 module.exports = async function () {
   if (process.env.UPDATE_FRONT_END) {
     console.log("Updating front end")
     await updateContractAddresses()
+    await updateABI()
   }
+}
+
+async function updateABI() {
+  const nftMarsketplace = await ethers.getContract("MarsKetplace")
+  fs.writeFileSync(
+    `${frontEndABILocation}NftMarsketplace.json`,
+    nftMarsketplace.interface.format(ethers.utils.FormatTypes.json)
+  )
+  // look for the interface documentation in hardhat, and FormatTypes in ethers docu
+  const mintOneToken = await ethers.getContract("MintOneToken")
+  fs.writeFileSync(
+    `${frontEndABILocation}MintOneToken.json`,
+    nftMarsketplace.interface.format(ethers.utils.FormatTypes.json)
+  )
 }
 
 async function updateContractAddresses() {
