@@ -1,20 +1,22 @@
 const { ethers, network } = require("hardhat")
 const { moveBlocks } = require("../utils/move-blocks")
 
-const TOKEN_ID = 1
+const TOKEN_ID = 0
 
-async function cancel() {
+async function buyNFT() {
   const marsKetplace = await ethers.getContract("MarsKetplace")
   const nft = await ethers.getContract("MintOneToken")
-  const tx = await marsKetplace.cancelListing(nft.address, TOKEN_ID)
+  const listing = await marsKetplace.getListing(nft.address, TOKEN_ID)
+  const price = listing.price.toString()
+  const tx = await marsKetplace.buyNFT(nft.address, TOKEN_ID, { value: price })
   await tx.wait(1)
-  console.log("NFT Canceled!")
+  console.log("NFT Purchased!")
   if ((network.config.chainId = "31337")) {
     await moveBlocks(2, (sleepAmount = 1000))
   }
 }
 
-cancel()
+buyNFT()
   .then(() => process.exit(0))
   .catch((error) => {
     console.error(error)

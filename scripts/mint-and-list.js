@@ -1,7 +1,5 @@
 // This scripts mints an NFT and lists it directly on the MarsKetplace
 
-//NOT FINISHED YET
-
 const { ethers, network } = require("hardhat")
 const { moveBlocks } = require("../utils/move-blocks")
 const PRICE = ethers.utils.parseEther("1")
