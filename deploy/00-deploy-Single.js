@@ -8,7 +8,7 @@ const metadataTemplate = {
 }
 const imagesLocation = "./nftImages/"
 
-const tokenUri = "ipfs://QmaGmVJianGd3wzdfRNFZXWA9UeMdLFMBX5cZZSZjNeckP"
+const tokenUri = "ipfs://QmXxMKvi5UgUDggqDYSUohmhgpAyZFVa7rSveyC8poYRz1"
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy, log } = deployments

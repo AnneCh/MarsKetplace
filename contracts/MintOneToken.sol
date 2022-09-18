@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 contract MintOneToken is ERC721URIStorage {
 
-    string public constant TOKEN_URI = "ipfs://QmaGmVJianGd3wzdfRNFZXWA9UeMdLFMBX5cZZSZjNeckP";
+    string public constant TOKEN_URI = "ipfs://QmXxMKvi5UgUDggqDYSUohmhgpAyZFVa7rSveyC8poYRz1";
     uint256 private s_tokenCounter;
 
     event NFTMinted(uint256 indexed tokenId);
