@@ -1,5 +1,6 @@
 const { network } = require("hardhat")
 const { developmentChains } = require("../helper-hardhat-config")
+const { storeImages, storeMetadata } = require("../utils/upload-to-pinata")
 
 const metadataTemplate = {
   name: "",
@@ -8,7 +9,7 @@ const metadataTemplate = {
 }
 const imagesLocation = "./nftImages/"
 
-const tokenUri = "ipfs://QmXxMKvi5UgUDggqDYSUohmhgpAyZFVa7rSveyC8poYRz1"
+//const tokenUri = "ipfs://QmXxMKvi5UgUDggqDYSUohmhgpAyZFVa7rSveyC8poYRz1"
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy, log } = deployments
@@ -24,7 +25,14 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     waitConfirmations: network.config.waitConfirmations,
   })
 
+  await storeImages(imagesLocation)
+
   log(`Contract deployed! the address of your contract is ${mintNFT.address}`)
+}
+
+async function handleTokenURI() {
+  tokenUri = ""
+  return tokenUri
 }
 
 module.exports.tags = ["all", "single", "main"]
