@@ -23,7 +23,7 @@ async function updateABI() {
   const mintOneToken = await ethers.getContract("MintOneToken")
   fs.writeFileSync(
     `${frontEndABILocation}MintOneToken.json`,
-    nftMarsketplace.interface.format(ethers.utils.FormatTypes.json)
+    mintOneToken.interface.format(ethers.utils.FormatTypes.json)
   )
 }
 
