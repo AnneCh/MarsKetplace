@@ -8,7 +8,7 @@ const { developmentChains } = require("../helper-hardhat-config")
       let mintNft, deployer
       let _name = "Plot On Mars"
       let _symbol = "POM"
-      let _tokenURI = "ipfs://QmQE3xUxXTHspvApiYbHQoNnpgwonQbxjZgcuXDfrAKu7e"
+      let _tokenURI = "ipfs://QmemEh8hNPQdt9ssWuDzv88Pg8gSgqWvhaBUkZE7mEAmFn"
 
       //deploys the contract and gets an instance of it to work with
       beforeEach(async () => {
