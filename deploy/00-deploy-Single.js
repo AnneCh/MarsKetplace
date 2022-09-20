@@ -9,20 +9,19 @@ const metadataTemplate = {
 }
 const imagesLocation = "./nftImages/"
 
-let tokenUri = "ipfs://QmTC3qoTfbdoY3YvypwFSq6WcDkpE5CKJekGUnNBmPonME"
+let tokenUri = "ipfs://QmQE3xUxXTHspvApiYbHQoNnpgwonQbxjZgcuXDfrAKu7e"
 
 let tokenUris = [
-  "ipfs://QmTC3qoTfbdoY3YvypwFSq6WcDkpE5CKJekGUnNBmPonME",
-  "ipfs://QmZ9GBhGK2xDrfbiVsmbJS6omvMfjRA8DcAhkAVAoUJEbS",
-  "ipfs://QmVY7RPzZLnNFZDvVWAN6q5L8jBxS1o4aPYMnLzi1uWefq",
+  "ipfs://QmQE3xUxXTHspvApiYbHQoNnpgwonQbxjZgcuXDfrAKu7e",
+  "ipfs://QmWYi6UqQu18eCpVHRW5RWU7ZoN2V2bV1rJLsGiTtaZStv",
+  "ipfs://QmcaK5P16j5JWUV57nUhdBQd3hW6XGP8voTJEFgjAnBmpW",
 ]
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy, log } = deployments
   const { deployer } = await getNamedAccounts()
-  const chainId = network.config.chainId
   if (process.env.UPLOAD_TO_PINATA == "true") {
-    tokenUri = await handleTokenURI()
+    tokenUris = await handleTokenURI()
   }
 
   const mintNFT = await deploy("MintOneToken", {
@@ -41,7 +40,7 @@ async function handleTokenURI() {
   for (i in imageUploadResponses) {
     let tokenUriMetadata = { ...metadataTemplate }
     tokenUriMetadata.name = files[i].replace(".png", "")
-    tokenUriMetadata.description = `An adorable ${tokenUriMetadata.name} pup!`
+    tokenUriMetadata.description = `Here you are, you got your own ${tokenUriMetadata.name} !`
     tokenUriMetadata.image = `ipfs://${imageUploadResponses[i].IpfsHash}`
     console.log(`Uploading ${tokenUriMetadata.name}...`)
     const metadataUploadResponse = await storeMetadata(tokenUriMetadata)

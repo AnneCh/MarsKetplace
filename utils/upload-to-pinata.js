@@ -3,10 +3,8 @@ const fs = require("fs")
 const path = require("path")
 require("dotenv").config
 
-//upload our data from .env
 const pinataApiKey = process.env.PINATA_API_KEY
 const pinataApiSecret = process.env.PINATA_API_SECRET
-//use them to access pinataSDK functions pinFileToIPFS() and pinJSONToIPFS()
 const pinata = pinataSDK(pinataApiKey, pinataApiSecret)
 
 async function storeImages(imagesFilePath) {
