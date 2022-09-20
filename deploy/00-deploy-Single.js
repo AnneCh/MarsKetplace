@@ -7,6 +7,7 @@ const metadataTemplate = {
   description: "",
   image: "",
 }
+
 const imagesLocation = "./nftImages/"
 
 let tokenUri = "ipfs://QmQE3xUxXTHspvApiYbHQoNnpgwonQbxjZgcuXDfrAKu7e"
@@ -40,7 +41,7 @@ async function handleTokenURI() {
   for (i in imageUploadResponses) {
     let tokenUriMetadata = { ...metadataTemplate }
     tokenUriMetadata.name = files[i].replace(".png", "")
-    tokenUriMetadata.description = `Here you are, you got your own ${tokenUriMetadata.name} !`
+    tokenUriMetadata.description = `Get your own Plot On Mars!`
     tokenUriMetadata.image = `ipfs://${imageUploadResponses[i].IpfsHash}`
     console.log(`Uploading ${tokenUriMetadata.name}...`)
     const metadataUploadResponse = await storeMetadata(tokenUriMetadata)
