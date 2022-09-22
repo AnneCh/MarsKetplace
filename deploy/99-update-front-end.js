@@ -25,6 +25,18 @@ async function updateABI() {
     `${frontEndABILocation}MintOneToken.json`,
     mintOneToken.interface.format(ethers.utils.FormatTypes.json)
   )
+
+  const mintTokenTwo = await ethers.getContract("MintTokenTwo")
+  fs.writeFileSync(
+    `${frontEndABILocation}MintTokenTwo.json`,
+    mintTokenTwo.interface.format(ethers.utils.FormatTypes.json)
+  )
+
+  const mintTokenThree = await ethers.getContract("MintTokenThree")
+  fs.writeFileSync(
+    `${frontEndABILocation}MintTokenThree.json`,
+    mintTokenThree.interface.format(ethers.utils.FormatTypes.json)
+  )
 }
 
 async function updateContractAddresses() {

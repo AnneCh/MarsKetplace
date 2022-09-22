@@ -7,7 +7,7 @@ const { developmentChains } = require("../helper-hardhat-config")
   : describe("Basic NFT deployment contract tests", function () {
       let mintNft, deployer
       let _name = "Plot On Mars"
-      let _symbol = "POM"
+      let _symbol = "POM1"
       let _tokenURI = "ipfs://QmemEh8hNPQdt9ssWuDzv88Pg8gSgqWvhaBUkZE7mEAmFn"
 
       //deploys the contract and gets an instance of it to work with
@@ -18,7 +18,7 @@ const { developmentChains } = require("../helper-hardhat-config")
         mintNft = await ethers.getContract("MintOneToken")
       })
 
-      describe.only("Deployment", function () {
+      describe("Deployment", function () {
         it("Should have the correct name and symbol", async function () {
           const tokenCounter = await mintNft.getTokenCounter()
           const name = await mintNft.name()
