@@ -1,6 +1,7 @@
 const { network } = require("hardhat")
 const { developmentChains } = require("../helper-hardhat-config")
 const { storeImages, storeMetadata } = require("../utils/upload-to-pinata")
+const { verify } = require("../utils/verify")
 
 const metadataTemplate = {
   name: "",
@@ -10,7 +11,7 @@ const metadataTemplate = {
 
 const imagesLocation = "./nftImages/"
 
-let tokenUri = "ipfs://QmYBPE6hjuQf37vUi33jSoigYrph3DZwK9YayX3kQf77hN"
+let tokenUri = "ipfs://QmemEh8hNPQdt9ssWuDzv88Pg8gSgqWvhaBUkZE7mEAmFn"
 
 let tokenUris = [
   "ipfs://QmemEh8hNPQdt9ssWuDzv88Pg8gSgqWvhaBUkZE7mEAmFn",
@@ -21,18 +22,45 @@ let tokenUris = [
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy, log } = deployments
   const { deployer } = await getNamedAccounts()
+
   if (process.env.UPLOAD_TO_PINATA == "true") {
     tokenUris = await handleTokenURI()
   }
 
-  const mintNFT = await deploy("MintOneToken", {
+  const mintNFT1 = await deploy("MintOneToken", {
     from: deployer,
     args: "",
     log: true,
     waitConfirmations: network.config.waitConfirmations,
   })
 
-  log(`Contract deployed! the address of your contract is ${mintNFT.address}`)
+  log(`Contract deployed! the address of your contract is ${mintNFT1.address}`)
+
+  const mintNFT2 = await deploy("MintTokenTwo", {
+    from: deployer,
+    args: "",
+    log: true,
+    waitConfirmations: network.config.waitConfirmations,
+  })
+
+  log(`Contract deployed! the address of your contract is ${mintNFT2.address}`)
+
+  const mintNFT3 = await deploy("MintTokenThree", {
+    from: deployer,
+    args: "",
+    log: true,
+    waitConfirmations: network.config.waitConfirmations,
+  })
+
+  log(`Contract deployed! the address of your contract is ${mintNFT3.address}`)
+
+  if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
+    log("Verifying...")
+    await verify(mintNFT1.address, args)
+    await verify(mintNFT2.address, args)
+    await verify(mintNFT3.address, args)
+  }
+  log("----------------------------------------------------")
 }
 
 async function handleTokenURI() {
