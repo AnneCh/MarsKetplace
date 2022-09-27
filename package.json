@@ -18,5 +18,9 @@
     "prettier-plugin-solidity": "^1.0.0-dev.23",
     "solhint": "^3.3.7",
     "solidity-coverage": "^0.7.21"
+  },
+  "dependencies": {
+    "mime": "^3.0.0",
+    "nft.storage": "^7.0.0"
   }
 }
