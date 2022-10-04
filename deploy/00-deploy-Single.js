@@ -11,12 +11,12 @@ const metadataTemplate = {
 
 const imagesLocation = "./nftImages/"
 
-let tokenUri = "ipfs://QmemEh8hNPQdt9ssWuDzv88Pg8gSgqWvhaBUkZE7mEAmFn"
+// let tokenUri = "ipfs://bafkreicyl6zlj3nltg7cqgmz462xw5oqgv6qprvuv2yhdewnckadl6h4ku"
 
 let tokenUris = [
-  "ipfs://QmemEh8hNPQdt9ssWuDzv88Pg8gSgqWvhaBUkZE7mEAmFn",
-  "ipfs://QmWFqmv4LZLXevTmyN9G3gh4TsuJFGEsrWXtvjR7bcyf3p",
-  "ipfs://QmYBPE6hjuQf37vUi33jSoigYrph3DZwK9YayX3kQf77hN",
+  "ipfs://bafkreicyl6zlj3nltg7cqgmz462xw5oqgv6qprvuv2yhdewnckadl6h4ku",
+  // "ipfs://QmWFqmv4LZLXevTmyN9G3gh4TsuJFGEsrWXtvjR7bcyf3p",
+  // "ipfs://QmYBPE6hjuQf37vUi33jSoigYrph3DZwK9YayX3kQf77hN",
 ]
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
