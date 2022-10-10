@@ -15,7 +15,7 @@ contract MintTokenThree is ERC721URIStorage {
     event NFTMinted(uint256 indexed tokenId);
     
     constructor() ERC721("Plot On Mars", "POM2") {
-        s_tokenCounter = 1;
+        s_tokenCounter = 2;
     }
 
     function mintNft() public {
