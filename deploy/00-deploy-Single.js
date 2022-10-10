@@ -11,12 +11,10 @@ const metadataTemplate = {
 
 const imagesLocation = "./nftImages/"
 
-// let tokenUri = "ipfs://bafkreie5balvwjdkyqyacuiz53seankgr5vjslv5twforl5fzsvnv72vha"
-
 let tokenUris = [
   "ipfs://bafkreie5balvwjdkyqyacuiz53seankgr5vjslv5twforl5fzsvnv72vha",
-  // "ipfs://QmWFqmv4LZLXevTmyN9G3gh4TsuJFGEsrWXtvjR7bcyf3p",
-  // "ipfs://QmYBPE6hjuQf37vUi33jSoigYrph3DZwK9YayX3kQf77hN",
+  "ipfs://bafkreici3aprpvyf52htxkubvfkzcetbgjcsxyzp3ctza66qmwg4gt5dei",
+  "ipfs://bafkreibztzzsuvdnjuhflkigq62looj236ukrug3t4z3m3vueotmejb2ia",
 ]
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
